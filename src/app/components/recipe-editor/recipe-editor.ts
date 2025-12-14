@@ -75,7 +75,7 @@ export class RecipeEditor {
       // Wir müssen nichts mehr manuell umbauen.
       const newRecipe = this.recipeForm.value as Recipe;
 
-      this.recipeService.addRecipe(newRecipe).subscribe(() => {
+      this.recipeService.createRecipe(newRecipe).subscribe(() => {
         // Erst wenn der Server fertig ist, navigieren wir weg
         this.router.navigate(['/']);
       });

@@ -1,0 +1,105 @@
+hr {
+  border: 0;
+  border-top: 1px solid #444;
+  margin: 30px 0;
+}
+
+// Generelle Buttons
+.add-btn {
+  background: transparent;
+  border: 1px dashed #666;
+  color: #aaa;
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+
+  &:hover { border-color: #888; color: white; }
+}
+
+.delete-btn {
+  background: #ff4444;
+  color: white;
+  border: none;
+  width: 30px; height: 30px;
+  border-radius: 50%; // Rund
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+
+  &:hover { background: #ff0000; }
+}
+
+// Zutaten Zeile
+.ingredient-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+
+  .small-input { flex: 1; min-width: 60px; } // Menge & Einheit
+  .wide-input { flex: 4; } // Name der Zutat
+}
+
+// Zubereitung Zeile
+.step-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  align-items: flex-start;
+
+  .step-number {
+    padding-top: 10px;
+    font-weight: bold;
+    color: #888;
+    width: 25px;
+  }
+
+  textarea {
+    flex: 1;
+    background: #444;
+    border: 1px solid #555;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    resize: vertical; // Man kann es größer ziehen
+  }
+}
+
+.editor-container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #2a2a2a;
+  padding: 30px;
+  border-radius: 10px;
+  color: white;
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label { display: block; margin-bottom: 5px; color: #aaa; }
+
+  input, select {
+    width: 100%;
+    padding: 10px;
+    background: #444;
+    border: 1px solid #555;
+    color: white;
+    border-radius: 5px;
+  }
+}
+
+.row { display: flex; gap: 20px; }
+
+.save-btn {
+  width: 100%;
+  padding: 15px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+
+  &:disabled { background: #555; cursor: not-allowed; }
+}

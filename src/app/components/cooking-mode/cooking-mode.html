@@ -1,0 +1,44 @@
+@if (isLoading) {
+  <div class="cooking-container" style="display: flex; justify-content: center; align-items: center;">
+    <h1>👨‍🍳 Küche wird vorbereitet...</h1>
+  </div>
+}
+
+@else if (recipe) {
+  <div class="cooking-container"
+       (swipeleft)="nextStep()"
+       (swiperight)="prevStep()">
+
+    <div class="top-bar">
+      <button (click)="exit()" class="close-btn">✕ Schließen</button>
+      <span class="progress">
+        Schritt {{ currentStepIndex + 1 }} von {{ recipe.steps.length }}
+      </span>
+    </div>
+
+    <div class="step-content">
+      <div class="step-big-number">{{ currentStepIndex + 1 }}</div>
+      <p class="step-text">{{ recipe.steps[currentStepIndex] }}</p>
+    </div>
+
+    <div class="controls">
+      <button (click)="prevStep()" [disabled]="currentStepIndex === 0" class="nav-btn secondary">
+        ← Zurück
+      </button>
+
+      @if (currentStepIndex < recipe.steps.length - 1) {
+        <button (click)="nextStep()" class="nav-btn primary">Weiter →</button>
+      } @else {
+        <button (click)="exit()" class="nav-btn success">Fertig! 🎉</button>
+      }
+    </div>
+
+  </div>
+}
+
+@else {
+  <div class="cooking-container" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <h2>Rezept nicht gefunden 😢</h2>
+    <button (click)="exit()" class="nav-btn secondary">Zurück</button>
+  </div>
+}

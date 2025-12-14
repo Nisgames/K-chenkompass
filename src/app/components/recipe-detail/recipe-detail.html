@@ -1,0 +1,88 @@
+@if (recipe) {
+
+  @if (isLoading) {
+    <div class="loading-container" style="text-align: center; padding: 50px; color: #888;">
+      <h2>⏳ Rezept wird geladen...</h2>
+    </div>
+  }
+  @else if (recipe) {
+
+
+    <div class="detail-container">
+
+      <div class="hero-image" [style.background-image]="'url(' + recipe.imageUrl + ')'">
+        <div class="overlay">
+          <h1>{{ recipe.title }}</h1>
+          <div class="badges">
+            <span class="badge">{{ recipe.category }}</span>
+            <span class="badge">⏱ {{ recipe.durationMinutes }} Min.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-row" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>Zubereitung</h2>
+
+        <button [routerLink]="['/recipe', recipe.id, 'cook']" class="cook-btn">
+          👨‍🍳 Jetzt kochen!
+        </button>
+      </div>
+
+      <div class="content-grid">
+
+        <div class="sidebar">
+          <div class="portion-calculator">
+            <h3>Zutaten für</h3>
+            <div class="input-group">
+              <input type="number" [(ngModel)]="currentServings" min="1">
+              <span>Personen</span>
+            </div>
+          </div>
+
+          <ul class="ingredient-list">
+            @for (ing of recipe.ingredients; track ing.name) {
+              <li>
+                <label>
+                  <input type="checkbox"> <span class="amount">
+                  {{ (ing.amount / recipe.servings * currentServings) | number:'1.0-1' }}
+                </span>
+                  <span class="unit">{{ ing.unit }}</span>
+                  <span class="name">{{ ing.name }}</span>
+                </label>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <div class="main-content">
+          <h2>Zubereitung</h2>
+          <div class="steps">
+            @for (step of recipe.steps; track step; let i = $index) {
+              <div class="step">
+                <span class="step-number">{{ i + 1 }}</span>
+                <p>{{ step }}</p>
+              </div>
+            }
+          </div>
+
+          <button class="back-btn" routerLink="/">← Zurück zur Übersicht</button>
+        </div>
+
+      </div>
+    </div>
+
+
+  }
+  @else {
+    <div class="error">
+      <h2>Rezept nicht gefunden! 😢</h2>
+      <button routerLink="/">Zurück</button>
+    </div>
+  }
+
+} @else {
+  <div class="error">
+    <h2>Rezept nicht gefunden! 😢</h2>
+    <button routerLink="/">Zurück</button>
+  </div>
+}

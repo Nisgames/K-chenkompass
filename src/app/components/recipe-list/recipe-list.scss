@@ -1,0 +1,122 @@
+.create-btn {
+  background: #ff9800; // Orange als Akzentfarbe
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+
+  &:hover { background: #e68900; }
+}
+
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  button {
+    background: transparent;
+    border: 1px solid #555;
+    color: #ccc;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: #888;
+      color: white;
+    }
+
+    // Wenn der Button aktiv ist (durch [class.active])
+    &.active {
+      background: #4caf50; // Ein schönes Grün
+      border-color: #4caf50;
+      color: white;
+      font-weight: bold;
+    }
+  }
+}
+
+.search-bar {
+  padding: 0 20px 20px 20px; // Abstand zum Grid
+  display: flex;
+  justify-content: center;
+
+  input {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 30px; // Pillen-Form
+    background: #333;
+    color: white;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background 0.2s;
+
+    &:focus {
+      background: #444;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+  }
+}
+
+.recipe-grid {
+  display: grid;
+  // Automatische Spalten: So viele wie passen, mind. 300px breit
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.recipe-card {
+  background: #2a2a2a; // Dunkles Design wie gewünscht
+  color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: transform 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+
+  .card-image {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .card-content {
+    padding: 15px;
+
+    h3 { margin: 0 0 10px 0; }
+
+    .meta-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    .tags {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+
+      .tag {
+        background: #444;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}

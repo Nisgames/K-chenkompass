@@ -1,0 +1,26 @@
+name: Deploy to Home Server
+
+# Wann soll das passieren? Bei jedem Push auf main
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    # WICHTIG: Hier sagen wir, es soll auf DEINEM Server laufen
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Da der Runner auf deinem Server im Projektordner arbeitet,
+      # liegen die Dateien jetzt schon da.
+
+      - name: Docker Update
+        run: |
+          # Wir sind jetzt quasi auf deinem Server
+          # Da der Runner in einem eigenen Ordner arbeitet, müssen wir evtl.
+          # schauen, wie wir Docker Compose aufrufen.
+          # Einfachste Variante für den Runner:
+          docker compose up -d --build

@@ -6,6 +6,7 @@ services:
       - "8080:80" # Erreichbar unter http://DEIN-SERVER:8080
     depends_on:
       - backend
+    restart: always
 
   # Unser JSON Server Backend
   backend:
@@ -19,3 +20,4 @@ services:
       - ./db.json:/data/db.json
     ports:
       - "3000:3000" # Optional, falls du direkt zugreifen willst
+    restart: always

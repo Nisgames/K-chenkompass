@@ -17,7 +17,8 @@ services:
     restart: unless-stopped
     # Wir speichern die Daten dauerhaft im Ordner pb_data
     volumes:
-      - ./pb_data:/pb_data
+      #- ./pb_data:/pb_data
+      - kitchen_data:/pb_data
     # PocketBase läuft standardmäßig auf 8090
     ports:
       - "8090:8090"
@@ -27,3 +28,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+volumes:
+  kitchen_data:

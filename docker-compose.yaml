@@ -9,15 +9,21 @@ services:
     restart: always
 
   # Unser JSON Server Backend
+  # ... frontend bleibt gleich ...
+
   backend:
-    image: node:20-alpine
-    working_dir: /data
-    # Wir installieren json-server direkt beim Start
-    command: sh -c "npm install -g json-server && json-server --watch db.json --port 3000 --host 0.0.0.0"
+    image: ghcr.io/muchobien/pocketbase:latest
+    container_name: pocketbase
+    restart: unless-stopped
+    # Wir speichern die Daten dauerhaft im Ordner pb_data
     volumes:
-      # WICHTIG: Wir verbinden die db.json mit dem Host,
-      # damit die Rezepte erhalten bleiben, auch wenn der Container gelöscht wird!
-      - ./db.json:/data/db.json
+      - ./pb_data:/pb_data
+    # PocketBase läuft standardmäßig auf 8090
     ports:
-      - "3000:3000" # Optional, falls du direkt zugreifen willst
-    restart: always
+      - "8090:8090"
+    # Optional: Healthcheck
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8090/api/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

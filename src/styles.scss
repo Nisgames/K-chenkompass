@@ -1,1 +1,73 @@
-/* You can add global styles to this file, and also import other style files */
+/* --- GLOBALE VARIABLEN --- */
+:root {
+  /* Ein sehr dunkles Grau, angenehmer als reines Schwarz */
+  --bg-app: #121212;
+  --bg-card: #1e1e1e;
+  --bg-input: #2d2d2d;
+
+  /* Textfarben */
+  --text-main: #e0e0e0;
+  --text-muted: #a0a0a0;
+
+  /* Akzentfarbe (z.B. ein leckeres Orange oder Grün) */
+  --primary-color: #ff9800;
+  --primary-hover: #f57c00;
+}
+
+/* --- BASIS SETUP --- */
+body {
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- BOOTSTRAP OVERRIDES (Damit es nicht kacke aussieht) --- */
+
+/* Cards (Rezept-Kacheln) */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid #333;
+  color: var(--text-main);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.card-title {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* Eingabefelder (Input Fields) dunkel machen */
+.form-control, .form-select {
+  background-color: var(--bg-input) !important;
+  border-color: #444 !important;
+  color: var(--text-main) !important;
+}
+
+.form-control:focus {
+  background-color: var(--bg-input) !important;
+  border-color: var(--primary-color) !important;
+  color: white !important;
+  box-shadow: 0 0 0 0.25rem rgba(255, 152, 0, 0.25) !important;
+}
+
+/* Buttons verschönern */
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #000; /* Schwarzer Text auf Orange ist gut lesbar */
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+/* Navbar (Optional, falls du die Bootstrap Navbar nutzt) */
+.navbar {
+  background-color: var(--bg-card) !important;
+  border-bottom: 1px solid #333;
+}
+.navbar-brand, .nav-link {
+  color: var(--text-main) !important;
+}

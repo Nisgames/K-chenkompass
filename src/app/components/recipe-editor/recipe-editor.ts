@@ -70,14 +70,31 @@ export class RecipeEditor {
 
   // --- SPEICHERN ---
   onSubmit() {
+    // ... in der submit Methode ...
     if (this.recipeForm.valid) {
-      // Das Formular hat jetzt genau die Struktur unseres Recipe-Models!
-      // Wir müssen nichts mehr manuell umbauen.
-      const newRecipe = this.recipeForm.value as Recipe;
 
-      this.recipeService.createRecipe(newRecipe).subscribe(() => {
-        // Erst wenn der Server fertig ist, navigieren wir weg
-        this.router.navigate(['/']);
+      // 1. Kopie der Form-Werte nehmen
+      const formValue = { ...this.recipeForm.value };
+
+      // 2. Zutaten von Objekten {amount, name} in Strings "Menge Name" umwandeln
+      // Prüfen, ob ingredients überhaupt existieren und ein Array sind
+      if (formValue.ingredients && Array.isArray(formValue.ingredients)) {
+        formValue.ingredients = formValue.ingredients.map((ing: any) => {
+          // Falls es noch das alte Objekt ist -> Zusammenkleben
+          if (typeof ing === 'object' && ing.name) {
+            return `${ing.amount} ${ing.name}`.trim();
+          }
+          // Falls es schon ein String ist -> so lassen
+          return ing;
+        });
+      }
+
+      // 3. Das gleiche evtl. für Steps (falls die auch Objekte waren, sonst weglassen)
+      // ...
+
+      // 4. Absenden (jetzt mit 'formValue' statt 'this.recipeForm.value')
+      this.recipeService.createRecipe(formValue).subscribe({
+        // ... dein success code
       });
     }
   }

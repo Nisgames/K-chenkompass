@@ -1,20 +1,22 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms'; // WICHTIG
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { RecipeService } from '../../services/recipe';
-import { Recipe } from '../../models/recipe.model';
 
 @Component({
   selector: 'app-recipe-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule], // ReactiveFormsModule ist hier Pflicht
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './recipe-editor.html',
   styleUrl: './recipe-editor.scss'
 })
-
 export class RecipeEditor {
   recipeForm: FormGroup;
+
+  // Für das Bild
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
 
   private fb = inject(FormBuilder);
   private recipeService = inject(RecipeService);
@@ -23,33 +25,43 @@ export class RecipeEditor {
   constructor() {
     this.recipeForm = this.fb.group({
       title: ['', Validators.required],
-      imageUrl: [''],
+      // imageUrl brauchen wir hier nicht mehr als Text-Input
       durationMinutes: [30, [Validators.required, Validators.min(1)]],
       servings: [2, [Validators.required, Validators.min(1)]],
       category: ['Herzhaft'],
-
-      // NEU: Die leeren Listen für Zutaten und Schritte
       ingredients: this.fb.array([]),
       steps: this.fb.array([])
     });
+
+    // Initial ein leeres Feld für Zutaten und Schritte
+    this.addIngredient();
+    this.addStep();
   }
 
-  // --- HELFER-METHODEN (GETTER) ---
-  // Damit wir im HTML leicht auf die Listen zugreifen können
-  get ingredients() {
-    return this.recipeForm.get('ingredients') as FormArray;
+  get ingredients() { return this.recipeForm.get('ingredients') as FormArray; }
+  get steps() { return this.recipeForm.get('steps') as FormArray; }
+
+  // --- BILD LOGIK ---
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+
+      // Vorschau erstellen
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
   }
 
-  get steps() {
-    return this.recipeForm.get('steps') as FormArray;
-  }
-
-  // --- ZUTATEN LOGIK ---
+  // --- ZUTATEN ---
   addIngredient() {
     const ingredientGroup = this.fb.group({
-      name: ['', Validators.required],
-      amount: [100, Validators.required],
-      unit: ['g', Validators.required]
+      amount: [null], // Kann auch leer sein
+      unit: [''],
+      name: ['', Validators.required]
     });
     this.ingredients.push(ingredientGroup);
   }
@@ -58,9 +70,8 @@ export class RecipeEditor {
     this.ingredients.removeAt(index);
   }
 
-  // --- SCHRITTE LOGIK ---
+  // --- SCHRITTE ---
   addStep() {
-    // Ein Schritt ist nur ein einfacher Text, kein ganzes Objekt -> daher FormControl
     this.steps.push(this.fb.control('', Validators.required));
   }
 
@@ -70,32 +81,44 @@ export class RecipeEditor {
 
   // --- SPEICHERN ---
   onSubmit() {
-    // ... in der submit Methode ...
     if (this.recipeForm.valid) {
+      const formValue = this.recipeForm.value;
 
-      // 1. Kopie der Form-Werte nehmen
-      const formValue = { ...this.recipeForm.value };
+      // 1. FormData Objekt erstellen (Wichtig für File Upload!)
+      const formData = new FormData();
 
-      // 2. Zutaten von Objekten {amount, name} in Strings "Menge Name" umwandeln
-      // Prüfen, ob ingredients überhaupt existieren und ein Array sind
-      if (formValue.ingredients && Array.isArray(formValue.ingredients)) {
-        formValue.ingredients = formValue.ingredients.map((ing: any) => {
-          // Falls es noch das alte Objekt ist -> Zusammenkleben
-          if (typeof ing === 'object' && ing.name) {
-            return `${ing.amount} ${ing.name}`.trim();
-          }
-          // Falls es schon ein String ist -> so lassen
-          return ing;
-        });
+      // 2. Einfache Felder anhängen
+      formData.append('title', formValue.title);
+      formData.append('durationMinutes', formValue.durationMinutes);
+      formData.append('servings', formValue.servings);
+      formData.append('category', formValue.category);
+
+      // 3. Bild anhängen (falls gewählt)
+      // WICHTIG: Das Feld in PocketBase muss 'imageUrl' (oder wie du es genannt hast) heißen
+      if (this.selectedFile) {
+        formData.append('imageUrl', this.selectedFile);
       }
 
-      // 3. Das gleiche evtl. für Steps (falls die auch Objekte waren, sonst weglassen)
-      // ...
+      // 4. Listen konvertieren (PocketBase erwartet JSON bei Arrays via FormData)
 
-      // 4. Absenden (jetzt mit 'formValue' statt 'this.recipeForm.value')
-      this.recipeService.createRecipe(formValue).subscribe(() => {
-        // Erst wenn der Server fertig ist, navigieren wir weg
-        this.router.navigate(['/']);
+      // Zutaten "schön" formatieren: "{Menge} {Einheit} {Name}"
+      const formattedIngredients = formValue.ingredients
+        .map((ing: any) => {
+          const parts = [];
+          if (ing.amount) parts.push(ing.amount);
+          if (ing.unit) parts.push(ing.unit);
+          if (ing.name) parts.push(ing.name);
+          return parts.join(' ');
+        })
+        .filter((str: string) => str.trim().length > 0);
+
+      formData.append('ingredients', JSON.stringify(formattedIngredients));
+      formData.append('steps', JSON.stringify(formValue.steps));
+
+      // 5. Ab geht die Post
+      this.recipeService.createRecipe(formData).subscribe({
+        next: () => this.router.navigate(['/']),
+        error: (err) => console.error('Fehler beim Speichern:', err)
       });
     }
   }

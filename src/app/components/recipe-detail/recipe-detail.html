@@ -1,90 +1,99 @@
 @if (recipe) {
-
   @if (isLoading) {
-    <div class="loading-container" style="text-align: center; padding: 50px; color: #888;">
-      <h2>⏳ Rezept wird geladen...</h2>
+    <div class="loading-state">
+      <h2>⏳ Wird geladen...</h2>
     </div>
-  }
-  @else if (recipe) {
-
-
-    <div class="detail-container">
-
-      <div class="hero-image" [style.background-image]="'url(' + recipe.imageUrl + ')'">
-        <div class="overlay">
-          <h1>{{ recipe.title }}</h1>
-          <div class="badges">
-            <span class="badge">{{ recipe.category }}</span>
-            <span class="badge">⏱ {{ recipe.durationMinutes }} Min.</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="header-row" style="display: flex; justify-content: space-between; align-items: center;">
-        <h2>Zubereitung</h2>
-
-        <button [routerLink]="['/recipe', recipe.id, 'cook']" class="cook-btn">
-          👨‍🍳 Jetzt kochen!
-        </button>
-      </div>
-
-      <div class="content-grid">
-
-        <div class="sidebar">
-          <div class="portion-calculator">
-            <h3>Zutaten für</h3>
-            <div class="input-group">
-              <input type="number" [(ngModel)]="currentServings" min="1">
-              <span>Personen</span>
-            </div>
-          </div>
-
-          <ul class="ingredient-list">
-
-            @for (ingredient of recipe.ingredients; track $index) {
-
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="ing{{$index}}">
-                <label class="form-check-label" for="ing{{$index}}">
-
-                  {{ ingredient }}
-
-                </label>
-              </div>
-
-            }
-
-          </ul>
-        </div>
-
-        <div class="main-content">
-          <h2>Zubereitung</h2>
-          <div class="steps">
-            @for (step of recipe.steps; track step; let i = $index) {
-              <div class="step">
-                <span class="step-number">{{ i + 1 }}</span>
-                <p>{{ step }}</p>
-              </div>
-            }
-          </div>
-
-          <button class="back-btn" routerLink="/">← Zurück zur Übersicht</button>
-        </div>
-
-      </div>
-    </div>
-
-
   }
   @else {
-    <div class="error">
-      <h2>Rezept nicht gefunden! 😢</h2>
-      <button routerLink="/">Zurück</button>
+    <div class="detail-page">
+
+      <div class="hero-header"
+           [style.background-image]="recipe.imageUrl ? 'url(' + recipe.imageUrl + ')' : 'linear-gradient(to right, #333, #444)'">
+
+        <div class="hero-overlay">
+          <div class="hero-content">
+
+            <div class="hero-text">
+              <span class="badge">{{ recipe.category }}</span>
+              <h1>{{ recipe.title }}</h1>
+
+              <div class="meta-row">
+                <span>⏱ {{ recipe.durationMinutes }} Minuten</span>
+                <span class="separator">•</span>
+                <span>📅 Erstellt am {{ recipe.id ? 'heute' : '' }}</span>
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <button [routerLink]="['/recipe', recipe.id, 'cook']" class="cook-btn">
+                👨‍🍳 Jetzt kochen!
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="content-grid container">
+
+        <aside class="sidebar">
+
+          <div class="ingredients-panel glass-panel">
+            <div class="panel-header">
+              <h3>Zutaten</h3>
+
+              <div class="portion-control">
+                <button (click)="currentServings = currentServings > 1 ? currentServings - 1 : 1" class="circle-btn">-</button>
+                <div class="portion-display">
+                  <input type="number" [(ngModel)]="currentServings" min="1">
+                  <span>Pers.</span>
+                </div>
+                <button (click)="currentServings = currentServings + 1" class="circle-btn">+</button>
+              </div>
+            </div>
+
+            <ul class="ingredient-list">
+              @for (ingredient of recipe.ingredients; track $index) {
+                <li class="ingredient-item">
+                  <label class="checkbox-wrapper">
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                    <span class="text">
+                      {{ ingredient }}
+                    </span>
+                  </label>
+                </li>
+              } @empty {
+                <p class="no-data">Keine Zutaten eingetragen.</p>
+              }
+            </ul>
+          </div>
+
+          <button routerLink="/" class="back-btn">← Zurück zur Übersicht</button>
+        </aside>
+
+        <main class="main-content">
+          <div class="steps-container">
+            <h3>Zubereitung</h3>
+
+            @for (step of recipe.steps; track step; let i = $index) {
+              <div class="step-card glass-panel">
+                <div class="step-number">{{ i + 1 }}</div>
+                <p class="step-text">{{ step }}</p>
+              </div>
+            } @empty {
+              <div class="step-card glass-panel">
+                <p>Keine Schritte eingetragen.</p>
+              </div>
+            }
+          </div>
+        </main>
+
+      </div>
     </div>
   }
-
 } @else {
-  <div class="error">
+  <div class="error-state">
     <h2>Rezept nicht gefunden! 😢</h2>
     <button routerLink="/">Zurück</button>
   </div>

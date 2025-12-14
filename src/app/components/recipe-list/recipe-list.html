@@ -1,54 +1,52 @@
-<div class="actions" style="text-align: right; padding: 20px;">
-  <button routerLink="/recipe/new" class="create-btn">+ Neues Rezept</button>
-</div>
-<div class="search-bar">
-  <input
-    type="text"
-    placeholder="Was möchtest du kochen?"
-    (input)="onSearch($event)"
-  >
-</div>
+<div class="control-bar glass-panel">
 
-<div class="filter-buttons">
-  <button (click)="filterByCategory('Alle')"
-          [class.active]="selectedCategory === 'Alle'">
-    Alle
+  <div class="search-wrapper">
+    <span class="search-icon">🔍</span>
+    <input
+      type="text"
+      placeholder="Was möchtest du kochen?"
+      (input)="onSearch($event)"
+    >
+  </div>
+
+  <div class="filter-wrapper">
+    <button (click)="filterByCategory('Alle')"
+            [class.active]="selectedCategory === 'Alle'">Alle</button>
+
+    <button (click)="filterByCategory('Herzhaft')"
+            [class.active]="selectedCategory === 'Herzhaft'">Herzhaft</button>
+
+    <button (click)="filterByCategory('Süß')"
+            [class.active]="selectedCategory === 'Süß'">Süß</button>
+  </div>
+
+  <button routerLink="/recipe/new" class="create-btn">
+    + Neues Rezept
   </button>
 
-  <button (click)="filterByCategory('Herzhaft')"
-          [class.active]="selectedCategory === 'Herzhaft'">
-    Herzhaft
-  </button>
-
-  <button (click)="filterByCategory('Süß')"
-          [class.active]="selectedCategory === 'Süß'">
-    Süß
-  </button>
 </div>
 
 <div class="recipe-grid">
   @for (recipe of recipes; track recipe.id) {
-
     <div class="recipe-card" [routerLink]="['/recipe', recipe.id]">
-      <div class="card-image" [style.background-image]="'url(' + recipe.imageUrl + ')'"></div>
+
+      <div class="card-image"
+           [style.background-image]="recipe.imageUrl ? 'url(' + recipe.imageUrl + ')' : 'linear-gradient(to bottom right, #333, #444)'">
+      </div>
 
       <div class="card-content">
         <h3>{{ recipe.title }}</h3>
 
         <div class="meta-info">
-          <span class="badge">{{ recipe.category }}</span>
+          <span class="category-badge">{{ recipe.category }}</span>
           <span class="duration">⏱ {{ recipe.durationMinutes }} Min.</span>
-        </div>
-
-        <div class="tags">
-          @for (tag of recipe.tags; track tag) {
-            <span class="tag">#{{ tag }}</span>
-          }
         </div>
       </div>
     </div>
-
   } @empty {
-    <p>Keine Rezepte gefunden.</p>
+    <div class="empty-state glass-panel">
+      <p>Keine Rezepte gefunden. 😔</p>
+      <button (click)="filterByCategory('Alle')">Filter zurücksetzen</button>
+    </div>
   }
 </div>

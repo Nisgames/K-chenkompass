@@ -1,78 +1,100 @@
-<div class="editor-container">
-  <h2>Neues Rezept erstellen</h2>
+<div class="editor-container glass-panel">
+
+  <div class="header-row">
+    <h2>Neues Rezept erstellen</h2>
+    <button routerLink="/" class="close-btn">✕</button>
+  </div>
 
   <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
 
-    <div class="form-group">
-      <label>Titel des Rezepts *</label>
-      <input type="text" formControlName="title" placeholder="z.B. Pfannkuchen">
-    </div>
+    <div class="top-grid">
 
-    <div class="form-group">
-      <label>Bild URL</label>
-      <input type="text" formControlName="imageUrl" placeholder="http://...">
-    </div>
+      <div class="image-upload-section">
+        <div class="upload-box" (click)="fileInput.click()"
+             [style.background-image]="imagePreview ? 'url(' + imagePreview + ')' : 'none'"
+             [class.has-image]="!!imagePreview">
 
-    <div class="row">
-      <div class="form-group">
-        <label>Dauer (Min)</label>
-        <input type="number" formControlName="durationMinutes">
+          <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" hidden>
+
+          @if (!imagePreview) {
+            <div class="placeholder">
+              <span class="icon">📷</span>
+              <span>Bild hochladen</span>
+            </div>
+          }
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Portionen</label>
-        <input type="number" formControlName="servings">
+      <div class="meta-section">
+
+        <div class="form-group">
+          <label>Titel des Rezepts</label>
+          <input type="text" formControlName="title" placeholder="z.B. Saftige Burger">
+        </div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label>Dauer (Min)</label>
+            <input type="number" formControlName="durationMinutes">
+          </div>
+
+          <div class="form-group">
+            <label>Portionen</label>
+            <input type="number" formControlName="servings">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Kategorie</label>
+          <select formControlName="category">
+            <option value="Herzhaft">Herzhaft 🍔</option>
+            <option value="Süß">Süß 🍰</option>
+          </select>
+        </div>
       </div>
     </div>
 
-    <div class="form-group">
-      <label>Kategorie</label>
-      <select formControlName="category">
-        <option value="Herzhaft">Herzhaft</option>
-        <option value="Süß">Süß</option>
-      </select>
+    <hr class="divider">
+
+    <div class="section-container" formArrayName="ingredients">
+      <h3>Zutaten</h3>
+
+      <div class="ingredients-grid">
+        @for (ctrl of ingredients.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="ingredient-row glass-panel-light">
+            <input type="number" formControlName="amount" placeholder="Menge" class="input-qty">
+            <input type="text" formControlName="unit" placeholder="Einh." class="input-unit">
+            <input type="text" formControlName="name" placeholder="Zutat (z.B. Mehl)" class="input-name">
+
+            <button type="button" (click)="removeIngredient(i)" class="delete-icon">✕</button>
+          </div>
+        }
+      </div>
+
+      <button type="button" (click)="addIngredient()" class="add-btn small">+ Zutat hinzufügen</button>
     </div>
 
-    <hr> <div formArrayName="ingredients">
-    <h3>Zutaten</h3>
+    <hr class="divider">
 
-    @for (ctrl of ingredients.controls; track $index; let i = $index) {
-      <div [formGroupName]="i" class="ingredient-row">
-
-        <input type="number" formControlName="amount" placeholder="Menge" class="small-input">
-        <input type="text" formControlName="unit" placeholder="Einh." class="small-input">
-        <input type="text" formControlName="name" placeholder="Zutat (z.B. Mehl)" class="wide-input">
-
-        <button type="button" (click)="removeIngredient(i)" class="delete-btn">🗑</button>
-      </div>
-    }
-
-    <button type="button" (click)="addIngredient()" class="add-btn">+ Zutat hinzufügen</button>
-  </div>
-
-    <hr>
-
-    <div formArrayName="steps">
+    <div class="section-container" formArrayName="steps">
       <h3>Zubereitung</h3>
 
       @for (ctrl of steps.controls; track $index; let i = $index) {
-        <div class="step-row">
-          <span class="step-number">{{ i + 1 }}.</span>
-
+        <div class="step-row glass-panel-light">
+          <span class="step-number">{{ i + 1 }}</span>
           <textarea [formControlName]="i" rows="2" placeholder="Was ist zu tun?"></textarea>
-
-          <button type="button" (click)="removeStep(i)" class="delete-btn">🗑</button>
+          <button type="button" (click)="removeStep(i)" class="delete-icon">✕</button>
         </div>
       }
 
-      <button type="button" (click)="addStep()" class="add-btn">+ Schritt hinzufügen</button>
+      <button type="button" (click)="addStep()" class="add-btn small">+ Schritt hinzufügen</button>
     </div>
 
-    <hr>
-
-    <button type="submit" [disabled]="!recipeForm.valid" class="save-btn">
-      Rezept Speichern
-    </button>
+    <div class="actions">
+      <button type="submit" [disabled]="!recipeForm.valid" class="save-btn big">
+        Rezept Speichern 💾
+      </button>
+    </div>
 
   </form>
 </div>

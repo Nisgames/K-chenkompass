@@ -1,35 +1,51 @@
 @if (isLoading) {
-  <div class="cooking-container" style="display: flex; justify-content: center; align-items: center;">
-    <h1>👨‍🍳 Küche wird vorbereitet...</h1>
+  <div class="loading-screen">
+    <h2>🔪 Messer werden geschärft...</h2>
   </div>
 }
 
 @else if (recipe) {
+
   <div class="cooking-container"
        (swipeleft)="nextStep()"
        (swiperight)="prevStep()">
 
     <div class="top-bar">
-      <button (click)="exit()" class="close-btn">✕ Schließen</button>
-      <span class="progress">
-        Schritt {{ currentStepIndex + 1 }} von {{ recipe.steps.length }}
-      </span>
+      <div class="recipe-info">
+        <span class="recipe-title">{{ recipe.title }}</span>
+        <span class="step-counter">Schritt {{ currentStepIndex + 1 }} / {{ recipe.steps.length }}</span>
+      </div>
+      <button (click)="exit()" class="close-btn">✕ Beenden</button>
     </div>
 
-    <div class="step-content">
-      <div class="step-big-number">{{ currentStepIndex + 1 }}</div>
-      <p class="step-text">{{ recipe.steps[currentStepIndex] }}</p>
+    <div class="progress-track">
+      <div class="progress-fill"
+           [style.width.%]="((currentStepIndex + 1) / recipe.steps.length) * 100">
+      </div>
     </div>
 
-    <div class="controls">
-      <button (click)="prevStep()" [disabled]="currentStepIndex === 0" class="nav-btn secondary">
+    <div class="step-wrapper">
+      <div class="step-card glass-panel">
+        <div class="big-number">{{ currentStepIndex + 1 }}</div>
+        <p class="step-instruction">{{ recipe.steps[currentStepIndex] }}</p>
+      </div>
+    </div>
+
+    <div class="controls-bar">
+      <button (click)="prevStep()"
+              [style.visibility]="currentStepIndex === 0 ? 'hidden' : 'visible'"
+              class="nav-btn secondary">
         ← Zurück
       </button>
 
       @if (currentStepIndex < recipe.steps.length - 1) {
-        <button (click)="nextStep()" class="nav-btn primary">Weiter →</button>
+        <button (click)="nextStep()" class="nav-btn primary big-action">
+          Nächster Schritt →
+        </button>
       } @else {
-        <button (click)="exit()" class="nav-btn success">Fertig! 🎉</button>
+        <button (click)="exit()" class="nav-btn success big-action">
+          Guten Appetit! 🎉
+        </button>
       }
     </div>
 
@@ -37,8 +53,8 @@
 }
 
 @else {
-  <div class="cooking-container" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+  <div class="error-screen">
     <h2>Rezept nicht gefunden 😢</h2>
-    <button (click)="exit()" class="nav-btn secondary">Zurück</button>
+    <button (click)="exit()">Zurück</button>
   </div>
 }

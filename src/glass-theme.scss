@@ -1,0 +1,9 @@
+/* Definition des Glass-Effekts als Mixin */
+@mixin glass-panel-styles {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+}

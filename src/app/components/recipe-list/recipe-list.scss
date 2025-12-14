@@ -1,141 +1,226 @@
-/* Die Bilder sollen schön abschließen */
-.card-img-top {
-  height: 200px; /* Feste Höhe */
-  object-fit: cover; /* Bild wird zugeschnitten, nicht verzerrt */
-  border-bottom: 1px solid #333;
-}
+@use 'glass-theme' as glass;
 
-/* Hover-Effekt für die ganze Karte */
-.card {
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-}
+/* --- DIE CONTROL BAR (NEU) --- */
+.control-bar {
+  /* Wir nutzen das Glass-Mixin jetzt auch für den Header-Balken */
+  @include glass.glass-panel-styles;
 
-.card:hover {
-  transform: translateY(-5px); /* Leichtes Anheben */
-  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-  border-color: var(--primary-color); /* Rand leuchtet orange */
-}
-
-.create-btn {
-  background: #ff9800; // Orange als Akzentfarbe
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-
-  &:hover { background: #e68900; }
-}
-
-.filter-buttons {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap; /* Falls der Bildschirm klein ist, darf es umbrechen */
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 15px 25px;
+  margin-bottom: 30px;
+  margin-top: 20px;
+}
+
+/* 1. Suche */
+.search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+
+  .search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.7;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 15px 12px 45px; /* Platz für das Icon links */
+    background: rgba(255, 255, 255, 0.1) !important; /* Heller als vorher */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    font-size: 1rem;
+    border-radius: 30px !important;
+    outline: none;
+    transition: all 0.2s;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5); /* Helleres Grau für Lesbarkeit */
+    }
+
+    &:focus {
+      background: rgba(255, 255, 255, 0.15) !important;
+      border-color: var(--primary-color) !important;
+      box-shadow: 0 0 15px rgba(255, 152, 0, 0.2);
+    }
+  }
+}
+
+/* 2. Filter Buttons */
+.filter-wrapper {
+  display: flex;
   gap: 10px;
-  margin-bottom: 20px;
 
   button {
     background: transparent;
-    border: 1px solid #555;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: #ccc;
-    padding: 8px 16px;
+    padding: 8px 20px;
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 0.95rem;
 
     &:hover {
-      border-color: #888;
-      color: white;
+      background: var(--primary-color); /* Füllt sich Orange */
+      color: white; /* Text wird Weiß */
+      box-shadow: 0 0 20px rgba(255, 152, 0, 0.6); /* Leuchtet */
+      transform: translateY(-1px); /* Bewegt sich leicht hoch */
     }
 
-    // Wenn der Button aktiv ist (durch [class.active])
     &.active {
-      background: #4caf50; // Ein schönes Grün
-      border-color: #4caf50;
+      background: var(--primary-color);
+      border-color: var(--primary-color);
       color: white;
+      box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
       font-weight: bold;
     }
   }
 }
 
-.search-bar {
-  padding: 0 20px 20px 20px; // Abstand zum Grid
-  display: flex;
-  justify-content: center;
+/* 3. Action Button */
+/* 3. Action Button (Optimiert) */
+.create-btn {
+  /* WICHTIG: Damit die Hand erscheint */
+  cursor: pointer;
 
-  input {
-    width: 100%;
-    max-width: 500px;
-    padding: 12px 20px;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 30px; // Pillen-Form
-    background: #333;
-    color: white;
-    outline: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    transition: background 0.2s;
+  /* Layout */
+  padding: 10px 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  border-radius: 30px;
+  transition: all 0.3s ease;
 
-    &:focus {
-      background: #444;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    }
+  /* DESIGN: Ghost Style (Passt besser zu Glas) */
+  background: rgba(255, 152, 0, 0.15); /* Ganz leichtes Orange, transparent */
+  border: 2px solid var(--primary-color); /* Kräftiger Oranger Rand */
+  color: var(--primary-color); /* Text in Orange */
+
+  /* Schein nach innen */
+  box-shadow: 0 0 10px rgba(255, 152, 0, 0.1);
+
+  /* HOVER EFFEKT: Jetzt wird er gefüllt! */
+  &:hover {
+    background: var(--primary-color); /* Füllt sich Orange */
+    color: white; /* Text wird Weiß */
+    box-shadow: 0 0 20px rgba(255, 152, 0, 0.6); /* Leuchtet */
+    transform: translateY(-1px); /* Bewegt sich leicht hoch */
+  }
+
+  /* Klick Effekt */
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 5px rgba(255, 152, 0, 0.4);
   }
 }
 
+/* --- GRID & CARDS --- */
 .recipe-grid {
   display: grid;
-  // Automatische Spalten: So viele wie passen, mind. 300px breit
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
 }
 
 .recipe-card {
-  background: #2a2a2a; // Dunkles Design wie gewünscht
-  color: white;
-  border-radius: 12px;
+  @include glass.glass-panel-styles;
+
+  /* Wir machen den Hintergrund einen Ticken heller als Standard-Glass,
+     damit die Karten sich vom dunklen Body abheben */
+  background: rgba(255, 255, 255, 0.08);
+
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
   cursor: pointer;
+  height: 100%;
 
   &:hover {
     transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.12); /* Heller beim Hover */
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+    border-color: rgba(255, 255, 255, 0.3);
   }
 
   .card-image {
-    height: 200px;
+    height: 180px;
     background-size: cover;
     background-position: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .card-content {
-    padding: 15px;
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 
-    h3 { margin: 0 0 10px 0; }
-
-    .meta-info {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-      color: #ccc;
+    h3 {
+      margin: 0 0 15px 0;
+      font-size: 1.2rem;
+      line-height: 1.4;
     }
 
-    .tags {
+    .meta-info {
+      margin-top: auto; /* Drückt die Info nach unten */
       display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: #aaa;
 
-      .tag {
-        background: #444;
-        padding: 2px 8px;
-        border-radius: 4px;
+      .category-badge {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 4px 10px;
+        border-radius: 10px;
         font-size: 0.8rem;
+        color: white;
       }
     }
   }
+}
+
+/* Empty State Styling */
+.empty-state {
+  grid-column: 1 / -1; /* Nimmt ganze Breite ein */
+  text-align: center;
+  padding: 50px;
+
+  button {
+    margin-top: 20px;
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    &:hover { background: var(--primary-color); color: white; }
+  }
+}
+
+/* --- RESPONSIVE --- */
+/* Auf Handys alles untereinander */
+@media (max-width: 700px) {
+  .control-bar {
+    flex-direction: column;
+    align-items: stretch; /* Volle Breite */
+  }
+
+  .search-wrapper { max-width: 100%; }
+
+  .filter-wrapper {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .create-btn { width: 100%; }
 }

@@ -83,11 +83,10 @@ export class RecipeService {
     );
   }
 
-  // 3. Rezept erstellen
-  createRecipe(recipe: Omit<Recipe, 'id'>): Observable<Recipe> {
-    // Achtung: Datei-Uploads behandeln wir später separat.
-    // Hier senden wir erst mal die JSON Daten.
-    const promise = this.pb.collection('recipes').create(recipe);
+  // 3. Rezept erstellen (Jetzt mit FormData für Bilder!)
+  createRecipe(formData: FormData): Observable<Recipe> {
+    // PocketBase frisst FormData direkt
+    const promise = this.pb.collection('recipes').create(formData);
 
     return from(promise).pipe(
       map(record => this.mapRecordToRecipe(record))

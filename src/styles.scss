@@ -1,73 +1,82 @@
-/* --- GLOBALE VARIABLEN --- */
-:root {
-  /* Ein sehr dunkles Grau, angenehmer als reines Schwarz */
-  --bg-app: #222222;
-  --bg-card: #2d2d2d;
-  --bg-input: #2d2d2d;
+/* STATT @import nutzen wir @use */
+@use 'glass-theme' as glass;
 
-  /* Textfarben */
-  --text-main: #e0e0e0;
-  --text-muted: #a0a0a0;
+/* --- App Titel Styling --- */
+.app-title {
+  font-weight: 800;
+  font-size: 3rem;
+  margin: 30px 0 20px 0;
+  text-align: center;
 
-  /* Akzentfarbe (z.B. ein leckeres Orange oder Grün) */
-  --primary-color: #ff9800;
-  --primary-hover: #f57c00;
+  /* Cooler Gradient-Text Effekt */
+  background: linear-gradient(45deg, #ffffff, #ff9800);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; /* Text selbst ist unsichtbar, man sieht nur den Hintergrund */
+
+  /* Leichter Schatten für Lesbarkeit */
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+
+  .compass-icon {
+    /* Emoji wieder sichtbar machen (hat keinen Gradient) */
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    color: initial;
+    filter: none;
+    font-size: 2.5rem;
+    vertical-align: middle;
+  }
 }
 
-/* --- BASIS SETUP --- */
+:root {
+  --text-main: #ffffff;
+  --text-muted: #d0d0d0;
+  --primary-color: #ff9800;
+  --primary-hover: #f57c00;
+
+  /* GLASS VARIABLES */
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-blur: 16px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
 body {
-  background-color: var(--bg-app);
+  /* ... dein Hintergrund-Verlauf (unverändert lassen) ... */
+  background:
+    radial-gradient(circle at 10% 20%, rgba(33, 150, 243, 0.2) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(255, 152, 0, 0.15) 0%, transparent 40%),
+    linear-gradient(135deg, #121212 0%, #1e1e24 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
   color: var(--text-main);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* --- BOOTSTRAP OVERRIDES (Damit es nicht kacke aussieht) --- */
-
-/* Cards (Rezept-Kacheln) */
-.card {
-  background-color: var(--bg-card);
-  border: 1px solid #333;
-  color: var(--text-main);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+.glass-panel {
+  /* Aufruf mit Namespace "glass." */
+  @include glass.glass-panel-styles;
 }
 
-.card-title {
-  color: var(--primary-color);
-  font-weight: bold;
-}
-
-/* Eingabefelder (Input Fields) dunkel machen */
-.form-control, .form-select {
-  background-color: var(--bg-input) !important;
-  border-color: #444 !important;
+/* Bootstrap Overrides bleiben wie gehabt ... */
+.form-control, .form-select, input, textarea {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   color: var(--text-main) !important;
+  backdrop-filter: blur(5px);
+  border-radius: 10px !important;
 }
 
 .form-control:focus {
-  background-color: var(--bg-input) !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
   border-color: var(--primary-color) !important;
-  color: white !important;
-  box-shadow: 0 0 0 0.25rem rgba(255, 152, 0, 0.25) !important;
+  box-shadow: 0 0 10px rgba(255, 152, 0, 0.3) !important;
 }
 
-/* Buttons verschönern */
-.btn-primary {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  color: #000; /* Schwarzer Text auf Orange ist gut lesbar */
-  font-weight: bold;
-}
-
-.btn-primary:hover {
-  background-color: var(--primary-hover);
-  border-color: var(--primary-hover);
-}
-
-/* Navbar (Optional, falls du die Bootstrap Navbar nutzt) */
-.navbar {
-  background-color: var(--bg-card) !important;
-  border-bottom: 1px solid #333;
-}
-.navbar-brand, .nav-link {
-  color: var(--text-main) !important;
+.btn-primary, .create-btn, .save-btn, .cook-btn {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  border: none;
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
 }

@@ -1,105 +1,222 @@
-hr {
-  border: 0;
-  border-top: 1px solid #444;
-  margin: 30px 0;
+@use 'glass-theme' as glass;
+
+.editor-container {
+  @include glass.glass-panel-styles;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background: rgba(30, 30, 30, 0.6); /* Etwas dunklerer Background für besseren Kontrast */
 }
 
-// Generelle Buttons
-.add-btn {
-  background: transparent;
-  border: 1px dashed #666;
-  color: #aaa;
-  width: 100%;
+.header-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 30px;
+  h2 { margin: 0; font-size: 2rem; background: linear-gradient(45deg, white, #ccc); -webkit-background-clip: text; color: transparent; }
+  .close-btn { background: transparent; border: none; font-size: 1.5rem; color: #888; cursor: pointer; &:hover { color: white; } }
+}
+
+/* --- GRID LAYOUT OBEN --- */
+.top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+
+  @media (max-width: 700px) { grid-template-columns: 1fr; }
+}
+
+/* --- IMAGE UPLOAD --- */
+.image-upload-section {
+  .upload-box {
+    width: 100%;
+    height: 250px;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-size: cover; background-position: center;
+
+    /* Wenn Bild da ist, Border weg */
+    &.has-image { border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+
+    &:hover { background-color: rgba(255,255,255,0.05); border-color: var(--primary-color); }
+
+    .placeholder {
+      display: flex; flex-direction: column; align-items: center; color: #aaa;
+      .icon { font-size: 3rem; margin-bottom: 10px; }
+    }
+  }
+}
+
+/* --- FORM FIELDS --- */
+.form-group {
+  margin-bottom: 20px;
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ccc;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 12px 15px; /* Etwas mehr Breite beim Padding */
+    background: rgba(0,0,0,0.2) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    font-size: 1rem;
+
+    /* WICHTIG: Box-Sizing fix, falls Padding die Breite sprengt */
+    box-sizing: border-box;
+
+    &:focus {
+      border-color: var(--primary-color) !important;
+      background: rgba(0,0,0,0.4) !important;
+      outline: none;
+    }
+  }
+}
+
+.row-2 {
+  display: flex;
+  gap: 30px; /* Mehr Abstand dazwischen */
+  flex-wrap: wrap; /* WICHTIG: Umbruch erlauben! */
+
+  .form-group {
+    flex: 1;
+    min-width: 140px; /* Verhindert, dass sie zu schmal werden */
+  }
+}
+
+.divider { border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0; }
+
+/* --- DYNAMIC LISTS --- */
+.section-container {
+  h3 { color: var(--primary-color); margin-bottom: 15px; }
+}
+
+/* Helper Class für Rows */
+.glass-panel-light {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
   padding: 10px;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-top: 10px;
-
-  &:hover { border-color: #888; color: white; }
+  margin-bottom: 10px;
+  display: flex; gap: 10px; align-items: center;
 }
 
-.delete-btn {
-  background: #ff4444;
-  color: white;
-  border: none;
-  width: 30px; height: 30px;
-  border-radius: 50%; // Rund
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-
-  &:hover { background: #ff0000; }
-}
-
-// Zutaten Zeile
+/* FIX 3: Zutaten Inputs aufpumpen (Höhe & Look) */
 .ingredient-row {
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 15px;
+  align-items: center;
 
-  .small-input { flex: 1; min-width: 60px; } // Menge & Einheit
-  .wide-input { flex: 4; } // Name der Zutat
+  /* WICHTIG: Styles direkt auf ALLE Inputs in dieser Zeile anwenden */
+  input {
+    height: auto; /* Sicherstellen, dass keine feste Höhe stört */
+    padding: 12px 15px; /* Das ist der Schlüssel für die "Dicke" (identisch zu oben) */
+
+    background: rgba(0,0,0,0.2) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: all 0.2s;
+
+    &:focus {
+      border-color: var(--primary-color) !important;
+      background: rgba(0,0,0,0.4) !important;
+      outline: none;
+      box-shadow: 0 0 10px rgba(255, 152, 0, 0.1);
+    }
+  }
+
+  /* Spezifische Breiten für die einzelnen Felder */
+  .input-qty, .input-unit {
+    width: 110px !important;
+    flex-shrink: 0;
+  }
+
+  .input-name {
+    flex: 1; /* Nimmt den Rest */
+    min-width: 150px;
+  }
 }
 
-// Zubereitung Zeile
+/* FIX 4: Zubereitung (Textarea) lesbarer machen */
 .step-row {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
   align-items: flex-start;
+  gap: 15px; /* Abstand zur Nummer */
+  margin-bottom: 15px;
 
   .step-number {
-    padding-top: 10px;
+    background: var(--primary-color);
+    color: white;
+    width: 28px; height: 28px; /* Bisschen größer */
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
     font-weight: bold;
-    color: #888;
-    width: 25px;
+    margin-top: 10px; /* Optisch an der ersten Textzeile ausrichten */
+    flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
   }
 
   textarea {
     flex: 1;
-    background: #444;
-    border: 1px solid #555;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    resize: vertical; // Man kann es größer ziehen
+    resize: vertical;
+    min-height: 80px; /* Standardmäßig etwas höher */
+
+    /* HIER IST DIE ÄNDERUNG: */
+    font-size: 1.1rem; /* Größere Schrift */
+    line-height: 1.6;  /* Mehr Zeilenabstand für bessere Lesbarkeit */
+    padding: 15px;     /* Innenabstand vergrößert */
+
+    background: rgba(0,0,0,0.2) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    box-sizing: border-box;
+    transition: all 0.2s;
+
+    &:focus {
+      border-color: var(--primary-color) !important;
+      background: rgba(0,0,0,0.4) !important;
+      outline: none;
+      box-shadow: 0 0 10px rgba(255, 152, 0, 0.1);
+    }
+  }
+
+  .delete-icon {
+    margin-top: 10px; /* Auch oben ausrichten */
+    opacity: 0.7;
+    &:hover { opacity: 1; transform: scale(1.1); }
   }
 }
 
-.editor-container {
-  max-width: 600px;
-  margin: 40px auto;
-  background: #2a2a2a;
-  padding: 30px;
-  border-radius: 10px;
-  color: white;
+.delete-icon {
+  background: transparent; border: none; color: #666; font-size: 1.2rem; cursor: pointer;
+  &:hover { color: #ff4444; }
 }
 
-.form-group {
-  margin-bottom: 20px;
-
-  label { display: block; margin-bottom: 5px; color: #aaa; }
-
-  input, select {
-    width: 100%;
-    padding: 10px;
-    background: #444;
-    border: 1px solid #555;
-    color: white;
-    border-radius: 5px;
-  }
+/* --- BUTTONS --- */
+.add-btn {
+  width: 100%; padding: 10px;
+  background: rgba(255,255,255,0.05); border: 1px dashed #666; color: #aaa;
+  border-radius: 8px; cursor: pointer; margin-top: 10px;
+  &:hover { border-color: white; color: white; background: rgba(255,255,255,0.1); }
 }
-
-.row { display: flex; gap: 20px; }
 
 .save-btn {
-  width: 100%;
-  padding: 15px;
-  background: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1.1rem;
-  cursor: pointer;
-
-  &:disabled { background: #555; cursor: not-allowed; }
+  width: 100%; padding: 15px; margin-top: 30px;
+  background: linear-gradient(135deg, var(--primary-color), #ff4081);
+  border: none; color: white; font-size: 1.2rem; font-weight: bold;
+  border-radius: 12px; cursor: pointer; box-shadow: 0 5px 15px rgba(255,152,0,0.3);
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,152,0,0.5); }
 }

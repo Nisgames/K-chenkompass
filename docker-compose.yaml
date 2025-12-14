@@ -1,0 +1,21 @@
+services:
+  # Unser Angular Frontend
+  frontend:
+    build: .
+    ports:
+      - "8080:80" # Erreichbar unter http://DEIN-SERVER:8080
+    depends_on:
+      - backend
+
+  # Unser JSON Server Backend
+  backend:
+    image: node:20-alpine
+    working_dir: /data
+    # Wir installieren json-server direkt beim Start
+    command: sh -c "npm install -g json-server && json-server --watch db.json --port 3000 --host 0.0.0.0"
+    volumes:
+      # WICHTIG: Wir verbinden die db.json mit dem Host,
+      # damit die Rezepte erhalten bleiben, auch wenn der Container gelöscht wird!
+      - ./db.json:/data/db.json
+    ports:
+      - "3000:3000" # Optional, falls du direkt zugreifen willst

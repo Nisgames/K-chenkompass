@@ -1,38 +1,78 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http'; // Wichtig
-import { Observable } from 'rxjs';
-import { Recipe } from '../models/recipe.model';
+import { Injectable } from '@angular/core';
+import PocketBase from 'pocketbase';
+import { Observable, from, map } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Recipe } from '../models/recipe.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecipeService {
 
-  // Die Adresse unseres Backends
-  // WICHTIG: Hier die Variable nutzen statt hartem String
-  private apiUrl = environment.apiUrl;
+  private pb: PocketBase;
 
-  // Wir brauchen den HttpClient
-  private http = inject(HttpClient);
+  constructor() {
+    // Verbindung herstellen
+    this.pb = new PocketBase(environment.apiUrl);
+  }
 
-  // 1. Alle Rezepte laden
+  // --- HILFSFUNKTION: Daten von PocketBase in unser Format umwandeln ---
+  private mapRecordToRecipe(record: any): Recipe {
+    // Bild-URL zusammenbauen: http://server/api/files/COLLECTION/ID/FILENAME
+    const imageUrl = record.imageUrl
+      ? this.pb.files.getUrl(record, record.imageUrl)
+      : '';
+
+    return {
+      id: record.id,
+      title: record.title,
+      description: record.description,
+      durationMinutes: record.durationMinutes,
+      servings: record.servings,
+      category: record.category,
+      imageUrl: imageUrl, // Hier ist jetzt die fertige URL drin!
+      ingredients: record.ingredients || [], // Falls leer, leeres Array
+      steps: record.steps || []
+    } as Recipe;
+  }
+
+  // --- API METHODEN ---
+
+  // 1. Alle Rezepte holen
   getRecipes(): Observable<Recipe[]> {
-    return this.http.get<Recipe[]>(this.apiUrl);
+    const promise = this.pb.collection('recipes').getFullList({
+      sort: '-created', // Neueste zuerst
+    });
+
+    // Promise in Observable umwandeln und Daten mappen
+    return from(promise).pipe(
+      map(records => records.map(r => this.mapRecordToRecipe(r)))
+    );
   }
 
-  // 2. Ein einzelnes Rezept laden
+  // 2. Ein Rezept holen
   getRecipeById(id: string): Observable<Recipe> {
-    return this.http.get<Recipe>(`${this.apiUrl}/${id}`);
+    const promise = this.pb.collection('recipes').getOne(id);
+
+    return from(promise).pipe(
+      map(record => this.mapRecordToRecipe(record))
+    );
   }
 
-  // 3. Neues Rezept speichern
-  addRecipe(recipe: Recipe): Observable<Recipe> {
-    // ID wird vom JSON-Server automatisch generiert, wenn wir sie weglassen,
-    // oder wir generieren sie selbst. JSON-Server mag Strings als IDs.
-    if (!recipe.id) {
-      recipe.id = Math.random().toString(36).substring(2, 9);
-    }
-    return this.http.post<Recipe>(this.apiUrl, recipe);
+  // 3. Rezept erstellen
+  createRecipe(recipe: Omit<Recipe, 'id'>): Observable<Recipe> {
+    // Achtung: Datei-Uploads behandeln wir später separat.
+    // Hier senden wir erst mal die JSON Daten.
+    const promise = this.pb.collection('recipes').create(recipe);
+
+    return from(promise).pipe(
+      map(record => this.mapRecordToRecipe(record))
+    );
+  }
+
+  // 4. Rezept löschen (Bonus für später)
+  deleteRecipe(id: string): Observable<boolean> {
+    const promise = this.pb.collection('recipes').delete(id);
+    return from(promise);
   }
 }

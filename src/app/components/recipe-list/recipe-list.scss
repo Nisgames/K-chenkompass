@@ -1,3 +1,22 @@
+/* Die Bilder sollen schön abschließen */
+.card-img-top {
+  height: 200px; /* Feste Höhe */
+  object-fit: cover; /* Bild wird zugeschnitten, nicht verzerrt */
+  border-bottom: 1px solid #333;
+}
+
+/* Hover-Effekt für die ganze Karte */
+.card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Leichtes Anheben */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  border-color: var(--primary-color); /* Rand leuchtet orange */
+}
+
 .create-btn {
   background: #ff9800; // Orange als Akzentfarbe
   color: white;

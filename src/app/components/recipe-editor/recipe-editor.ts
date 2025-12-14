@@ -93,8 +93,9 @@ export class RecipeEditor {
       // ...
 
       // 4. Absenden (jetzt mit 'formValue' statt 'this.recipeForm.value')
-      this.recipeService.createRecipe(formValue).subscribe({
-        // ... dein success code
+      this.recipeService.createRecipe(formValue).subscribe(() => {
+        // Erst wenn der Server fertig ist, navigieren wir weg
+        this.router.navigate(['/']);
       });
     }
   }

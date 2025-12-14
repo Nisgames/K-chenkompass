@@ -40,17 +40,20 @@
           </div>
 
           <ul class="ingredient-list">
-            @for (ing of recipe.ingredients; track ing.name) {
-              <li>
-                <label>
-                  <input type="checkbox"> <span class="amount">
-                  {{ (ing.amount / recipe.servings * currentServings) | number:'1.0-1' }}
-                </span>
-                  <span class="unit">{{ ing.unit }}</span>
-                  <span class="name">{{ ing.name }}</span>
+
+            @for (ingredient of recipe.ingredients; track $index) {
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="ing{{$index}}">
+                <label class="form-check-label" for="ing{{$index}}">
+
+                  {{ ingredient }}
+
                 </label>
-              </li>
+              </div>
+
             }
+
           </ul>
         </div>
 

@@ -23,6 +23,30 @@ export class RecipeService {
       ? this.pb.files.getUrl(record, record.imageUrl)
       : '';
 
+    // --- 2. ZUTATEN LOGIK ---
+    let ingredients = record.ingredients;
+
+    // Falls PocketBase die Zutaten als Text-String schickt (z.B. "[...]")
+    // statt als echtes Array, parsen wir es manuell.
+    if (typeof ingredients === 'string') {
+      try {
+        ingredients = JSON.parse(ingredients);
+      } catch (e) {
+        console.warn('Konnte Zutaten nicht parsen:', ingredients);
+        ingredients = [];
+      }
+    }
+
+    // Das gleiche für Steps
+    let steps = record.steps;
+    if (typeof steps === 'string') {
+      try {
+        steps = JSON.parse(steps);
+      } catch (e) {
+        steps = [];
+      }
+    }
+
     return {
       id: record.id,
       title: record.title,

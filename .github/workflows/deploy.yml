@@ -23,4 +23,4 @@ jobs:
           # Da der Runner in einem eigenen Ordner arbeitet, müssen wir evtl.
           # schauen, wie wir Docker Compose aufrufen.
           # Einfachste Variante für den Runner:
-          docker compose up -d --build
+          docker-compose up -d --build

@@ -20,7 +20,7 @@ export class RecipeService {
   private mapRecordToRecipe(record: any): Recipe {
     // Bild-URL zusammenbauen: http://server/api/files/COLLECTION/ID/FILENAME
     const imageUrl = record.imageUrl
-      ? this.pb.files.getUrl(record, record.imageUrl)
+      ? this.pb.files.getURL(record, record.imageUrl)
       : '';
 
     // --- 2. ZUTATEN LOGIK ---

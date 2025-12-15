@@ -24,3 +24,5 @@ jobs:
           # schauen, wie wir Docker Compose aufrufen.
           # Einfachste Variante für den Runner:
           docker-compose up -d --build
+
+# ssh -L 8090:localhost:8090 nisgames@192.168.178.55

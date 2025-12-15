@@ -93,6 +93,14 @@ export class RecipeService {
     );
   }
 
+  // --- NEU: 3b. Rezept aktualisieren ---
+  updateRecipe(id: string, formData: FormData): Observable<Recipe> {
+    const promise = this.pb.collection('recipes').update(id, formData);
+    return from(promise).pipe(
+      map(record => this.mapRecordToRecipe(record))
+    );
+  }
+
   // 4. Rezept löschen (Bonus für später)
   deleteRecipe(id: string): Observable<boolean> {
     const promise = this.pb.collection('recipes').delete(id);

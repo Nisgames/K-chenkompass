@@ -8,7 +8,8 @@
     <div class="detail-page">
 
       <div class="hero-header"
-           [style.background-image]="recipe.imageUrl ? 'url(' + recipe.imageUrl + ')' : 'linear-gradient(to right, #333, #444)'">
+
+           [style.background-image]="'url(' + (recipe.imageUrl ? recipe.imageUrl : 'assets/images/placeholder-recipe.jpg') + ')'">
 
         <div class="hero-overlay">
           <div class="hero-content">
@@ -91,7 +92,11 @@
 
       </div>
     </div>
+    <button [routerLink]="['/recipe', recipe.id, 'edit']" class="fab-edit-btn" title="Rezept bearbeiten">
+      ✏️
+    </button>
   }
+
 } @else {
   <div class="error-state">
     <h2>Rezept nicht gefunden! 😢</h2>

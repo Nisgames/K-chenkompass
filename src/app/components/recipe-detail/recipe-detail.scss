@@ -1,5 +1,61 @@
 @use 'glass-theme' as glass;
 
+/* ... dein bestehender Code ... */
+
+/* --- FAB (Floating Action Button) --- */
+.fab-edit-btn {
+  /* Fixierte Position unten rechts */
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 100; /* Immer obenauf */
+
+  /* Aussehen: Rund und Glassy */
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+
+  /* Wir nutzen Variablen oder hardcoded Glass-Style */
+  background: rgba(40, 40, 40, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+
+  /* Flexbox um das Icon (✏️) zu zentrieren */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &:hover {
+    transform: translateY(-5px) scale(1.1); /* Hüpft hoch und wird größer */
+    background: var(--primary-color); /* Wird Orange beim Hover */
+    border-color: var(--primary-color);
+    box-shadow: 0 15px 30px rgba(255, 152, 0, 0.4); /* Leuchtet */
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Anpassung für Mobile: Etwas kleiner und näher am Rand */
+@media (max-width: 700px) {
+  .fab-edit-btn {
+    width: 50px;
+    height: 50px;
+    bottom: 20px;
+    right: 20px;
+    font-size: 1.2rem;
+  }
+}
+
 /* --- HERO HEADER (Das Bild) --- */
 .hero-header {
   /* 1. FIX: Höhe drastisch reduziert (40% vom Screen oder min. 300px) */

@@ -31,7 +31,7 @@
     <div class="recipe-card" [routerLink]="['/recipe', recipe.id]">
 
       <div class="card-image"
-           [style.background-image]="recipe.imageUrl ? 'url(' + recipe.imageUrl + ')' : 'linear-gradient(to bottom right, #333, #444)'">
+           [style.background-image]="'url(' + (recipe.imageUrl ? recipe.imageUrl : 'assets/images/placeholder-recipe.jpg') + ')'">
       </div>
 
       <div class="card-content">

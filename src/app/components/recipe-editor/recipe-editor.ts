@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { RecipeService } from '../../services/recipe';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-recipe-editor',
@@ -27,6 +28,8 @@ export class RecipeEditor implements OnInit {
   private recipeService = inject(RecipeService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+
+  private authService = inject(AuthService); // Injecten
 
   constructor() {
     this.recipeForm = this.fb.group({
@@ -101,27 +104,36 @@ export class RecipeEditor implements OnInit {
     });
   }
 
-  // Versucht, aus "500 g Mehl" wieder Objekte zu machen
-  // Strategie: [Zahl] [Wort] [Rest]
-  private parseIngredientString(str: string) {
-    // Regex Erklärung:
-    // ^([\d.,]+)   -> Startet mit Ziffern/Komma/Punkt (Gruppe 1: Menge)
-    // \s* -> Leerzeichen (optional)
-    // ([^\s\d]+)?  -> Ein Wort, das keine Ziffer ist (Gruppe 2: Einheit - optional)
-    // \s+          -> Leerzeichen (zwingend)
-    // (.*)$        -> Der Rest (Gruppe 3: Name)
+  // Hilfsfunktion: Kann mit Strings ("500g Mehl") UND alten Objekten umgehen
+  private parseIngredientString(ing: any) {
+
+    // FALL 1: Es ist ein Objekt (Alte Datenstruktur in der DB)
+    // Wir nehmen die Daten direkt, verhindern aber null-Werte
+    if (typeof ing === 'object' && ing !== null) {
+      return {
+        amount: ing.amount || null,
+        unit: ing.unit || '',
+        name: ing.name || ''
+      };
+    }
+
+    // FALL 2: Es ist ein String (Neue Struktur)
+    // Zur Sicherheit casten wir es explizit, falls mal 'undefined' kommt
+    const str = String(ing || '');
+
+    // Regex wie gehabt
     const regex = /^([\d.,]+)\s*([^\s\d]+)?\s+(.*)$/;
     const match = str.match(regex);
 
     if (match) {
       return {
-        amount: parseFloat(match[1].replace(',', '.')), // Komma zu Punkt für JS
+        amount: parseFloat(match[1].replace(',', '.')),
         unit: match[2] || '',
         name: match[3]
       };
     }
 
-    // Fallback: Wenn kein Muster passt (z.B. "Salz"), ist alles der Name
+    // Fallback für Strings ohne Menge (z.B. "Salz")
     return { amount: null, unit: '', name: str };
   }
 
@@ -161,6 +173,14 @@ export class RecipeEditor implements OnInit {
     // Bild nur anhängen, wenn ein NEUES gewählt wurde
     if (this.selectedFile) {
       formData.append('imageUrl', this.selectedFile);
+    }
+
+    // NEU: Beim ERSTELLEN den Autor setzen
+    if (!this.isEditMode) {
+      const currentUserId = this.authService.currentUserId;
+      if (currentUserId) {
+        formData.append('author', currentUserId);
+      }
     }
 
     // Listen konvertieren

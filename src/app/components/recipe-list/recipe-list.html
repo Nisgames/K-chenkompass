@@ -20,9 +20,11 @@
             [class.active]="selectedCategory === 'Süß'">Süß</button>
   </div>
 
-  <button routerLink="/recipe/new" class="create-btn">
-    + Neues Rezept
-  </button>
+  @if (authService.currentUser()) {
+    <button routerLink="/recipe/new" class="create-btn">
+      + Neues Rezept
+    </button>
+  }
 
 </div>
 

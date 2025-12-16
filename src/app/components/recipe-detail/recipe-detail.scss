@@ -435,3 +435,24 @@
 
   .sidebar { position: static; } /* Kein Sticky auf Handy */
 }
+.delete-text-btn {
+  display: block;
+  width: 100%;
+  margin-top: 15px; /* Abstand zum Zurück-Button */
+
+  background: transparent;
+  border: none;
+
+  color: rgba(255, 255, 255, 0.4); /* Ausgegraut, unauffällig */
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: all 0.2s;
+
+  &:hover {
+    color: #ff4444; /* Knallrot beim Hover */
+    text-decoration: none;
+    transform: translateY(-1px);
+    text-shadow: 0 0 10px rgba(255, 68, 68, 0.4);
+  }
+}

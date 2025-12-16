@@ -1,0 +1,92 @@
+@use 'glass-theme' as glass;
+
+.login-container {
+  min-height: 80vh; /* Fast volle Höhe */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  @include glass.glass-panel-styles;
+  padding: 40px;
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  background: rgba(30, 30, 30, 0.6);
+
+  h1 { font-size: 2rem; margin-bottom: 10px; color: white; }
+  .subtitle { color: #aaa; margin-bottom: 30px; }
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+
+  label { display: block; margin-bottom: 8px; font-weight: bold; color: #ccc; }
+
+  input {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(0,0,0,0.3) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 8px !important;
+    color: white !important;
+    box-sizing: border-box; /* Wichtig für Padding */
+
+    &:focus {
+      border-color: var(--primary-color) !important;
+      outline: none;
+    }
+  }
+}
+
+.error-msg {
+  background: rgba(255, 68, 68, 0.2);
+  border: 1px solid #ff4444;
+  color: #ffcccc;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--primary-color), #ff4081);
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+  &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(255,152,0,0.4); }
+}
+
+.footer-links {
+  .back-link { color: #888; text-decoration: none; font-size: 0.9rem; &:hover { color: white; } }
+  /* In login.scss ganz unten bei footer-links */
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Abstand zwischen den Links */
+
+  .register-link {
+    color: var(--primary-color);
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1rem;
+    &:hover { text-decoration: underline; }
+  }
+
+  .separator {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    width: 50%;
+    margin: 0 auto; /* Zentriert */
+  }
+}

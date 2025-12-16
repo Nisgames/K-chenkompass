@@ -1,19 +1,24 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import PocketBase from 'pocketbase';
 import { Observable, from, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Recipe } from '../models/recipe.model';
+import { AuthService } from './auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecipeService {
 
-  private pb: PocketBase;
+  private authService = inject(AuthService);
+
+  // Getter für bequemen Zugriff (optional, oder direkt this.authService.pb nutzen)
+  private get pb(): PocketBase {
+    return this.authService.pb;
+  }
 
   constructor() {
     // Verbindung herstellen
-    this.pb = new PocketBase(environment.apiUrl);
   }
 
   // --- HILFSFUNKTION: Daten von PocketBase in unser Format umwandeln ---
@@ -22,6 +27,8 @@ export class RecipeService {
     const imageUrl = record.imageUrl
       ? this.pb.files.getURL(record, record.imageUrl)
       : '';
+    // Wir schauen, ob 'author' expandiert wurde und holen den username
+    const authorName = record.expand?.author?.username || 'Unbekannter Koch';
 
     // --- 2. ZUTATEN LOGIK ---
     let ingredients = record.ingredients;
@@ -56,7 +63,9 @@ export class RecipeService {
       category: record.category,
       imageUrl: imageUrl, // Hier ist jetzt die fertige URL drin!
       ingredients: record.ingredients || [], // Falls leer, leeres Array
-      steps: record.steps || []
+      steps: record.steps || [],
+      author: record.author,
+      authorName: authorName,
     } as Recipe;
   }
 
@@ -65,7 +74,8 @@ export class RecipeService {
   // 1. Alle Rezepte holen
   getRecipes(): Observable<Recipe[]> {
     const promise = this.pb.collection('recipes').getFullList({
-      sort: '-created', // Neueste zuerst
+      sort: '-created',// Neueste zuerst
+      expand: 'author',
     });
 
     // Promise in Observable umwandeln und Daten mappen
@@ -76,7 +86,9 @@ export class RecipeService {
 
   // 2. Ein Rezept holen
   getRecipeById(id: string): Observable<Recipe> {
-    const promise = this.pb.collection('recipes').getOne(id);
+    const promise = this.pb.collection('recipes').getOne(id, {
+      expand: 'author', // <--- WICHTIG
+    });
 
     return from(promise).pipe(
       map(record => this.mapRecordToRecipe(record))
@@ -86,19 +98,18 @@ export class RecipeService {
   // 3. Rezept erstellen (Jetzt mit FormData für Bilder!)
   createRecipe(formData: FormData): Observable<Recipe> {
     // PocketBase frisst FormData direkt
-    const promise = this.pb.collection('recipes').create(formData);
-
-    return from(promise).pipe(
-      map(record => this.mapRecordToRecipe(record))
-    );
+    const promise = this.pb.collection('recipes').create(formData, {
+      expand: 'author'
+    });
+    return from(promise).pipe(map(record => this.mapRecordToRecipe(record)));
   }
 
   // --- NEU: 3b. Rezept aktualisieren ---
   updateRecipe(id: string, formData: FormData): Observable<Recipe> {
-    const promise = this.pb.collection('recipes').update(id, formData);
-    return from(promise).pipe(
-      map(record => this.mapRecordToRecipe(record))
-    );
+    const promise = this.pb.collection('recipes').update(id, formData, {
+      expand: 'author'
+    });
+    return from(promise).pipe(map(record => this.mapRecordToRecipe(record)));
   }
 
   // 4. Rezept löschen (Bonus für später)

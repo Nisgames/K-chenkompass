@@ -3,16 +3,28 @@ import { RecipeList } from './components/recipe-list/recipe-list'; // Dein Pfad
 import { RecipeDetail } from './components/recipe-detail/recipe-detail'; // Standard-Pfad (prüfen!)
 import { RecipeEditor } from './components/recipe-editor/recipe-editor';
 import { CookingModeComponent } from './components/cooking-mode/cooking-mode';
+import {LoginComponent} from './components/login/login';
+import { authGuard } from './guards/auth.guard';
+import {RegisterComponent} from './components/register/register';
 
 export const routes: Routes = [
   { path: '', component: RecipeList },
-  { path: 'recipe/new', component: RecipeEditor },
-  { path: 'recipe/:id/edit', component: RecipeEditor },
+
+  // NUR MIT TICKET (Guard)
+  {
+    path: 'recipe/new',
+    component: RecipeEditor,
+    canActivate: [authGuard] // <--- Der Türsteher
+  },
+  {
+    path: 'recipe/:id/edit',
+    component: RecipeEditor,
+    canActivate: [authGuard]
+  },
+
+  { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'recipe/:id', component: RecipeDetail },
-
-  // NEU: Der Koch-Modus (Kind-Element der ID ist hier nicht nötig, wir machen eine eigene Route)
   { path: 'recipe/:id/cook', component: CookingModeComponent },
-
-  // Falls jemand Quatsch eingibt, leite zur Startseite um
   { path: '**', redirectTo: '' }
 ];

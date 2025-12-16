@@ -4,6 +4,7 @@ import { RecipeService } from '../../services/recipe';
 import { CommonModule } from '@angular/common'; // Wichtig für Währung, Datum pipes etc.
 import { RouterModule } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
+import {AuthService} from '../../services/auth';
 
 @Component({
   selector: 'app-recipe-list',
@@ -23,6 +24,10 @@ export class RecipeList implements OnInit {
 
   private recipeService = inject(RecipeService);
   private cd = inject(ChangeDetectorRef);
+
+  // ...
+  public authService = inject(AuthService); // Public!
+// ...
 
   ngOnInit(): void {
     this.recipeService.getRecipes().subscribe(data => {

@@ -8,6 +8,8 @@ export interface Ingredient {
 export interface Recipe {
   id: string;
   title: string;
+  author: string; // Die ID (zum Vergleichen für isOwner)
+  authorName?: string;
   imageUrl?: string;
   description?: string;
 

@@ -21,7 +21,7 @@
               <div class="meta-row">
                 <span>⏱ {{ recipe.durationMinutes }} Minuten</span>
                 <span class="separator">•</span>
-                <span>📅 Erstellt am {{ recipe.id ? 'heute' : '' }}</span>
+                <span>👨‍🍳 von {{ recipe.authorName }}</span>
               </div>
             </div>
 
@@ -71,6 +71,10 @@
           </div>
 
           <button routerLink="/" class="back-btn">← Zurück zur Übersicht</button>
+
+          @if (isOwner) {
+            <button (click)="deleteRecipe()" class="delete-text-btn">Rezept löschen 🗑️</button>
+          }
         </aside>
 
         <main class="main-content">
@@ -92,9 +96,9 @@
 
       </div>
     </div>
-    <button [routerLink]="['/recipe', recipe.id, 'edit']" class="fab-edit-btn" title="Rezept bearbeiten">
-      ✏️
-    </button>
+    @if (isOwner) {
+      <button [routerLink]="['/recipe', recipe.id, 'edit']" class="fab-edit-btn">✏️</button>
+    }
   }
 
 } @else {

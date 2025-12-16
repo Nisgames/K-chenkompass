@@ -1,0 +1,93 @@
+/* Header Layout */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* User Box */
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 8px 15px;
+  /* Glass Mixin nutzen wir hier manuell oder per Klasse */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+
+  .user-name { font-size: 0.9rem; color: #ddd; }
+
+  .logout-btn {
+    background: transparent; border: 1px solid rgba(255,255,255,0.2);
+    color: #ccc; padding: 5px 10px; border-radius: 12px;
+    font-size: 0.8rem; cursor: pointer;
+    &:hover { background: rgba(255, 68, 68, 0.2); color: white; border-color: #ff4444; }
+  }
+}
+
+/* In styles.scss bei .login-link */
+.login-link {
+  color: #666;
+  text-decoration: none;
+  font-size: 0.9rem;
+  cursor: pointer; /* <--- Damit die Hand erscheint */
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--primary-color);
+    text-shadow: 0 0 10px rgba(255, 152, 0, 0.3);
+  }
+}
+
+/* Titel Margin anpassen, damit er nicht kollidiert */
+.app-title { margin: 0; /* Margin wird jetzt vom Header gesteuert */ }
+
+.guest-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  /* 1. Registrieren Button (Primary - Gefüllt) */
+  .register-btn {
+    background: var(--primary-color);
+    color: white;
+    /* Border hinzufügen, damit beide Buttons exakt gleich hoch sind */
+    border: 1px solid var(--primary-color);
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 152, 0, 0.5);
+    }
+  }
+
+  /* 2. Login Button (Secondary - Outline / Ghost) */
+  .login-link {
+    background: transparent; /* Durchsichtig */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Dezent weißer Rahmen */
+    color: #e0e0e0; /* Helles Grau/Weiß */
+
+    padding: 8px 20px; /* Gleiche Maße wie Register */
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: var(--primary-color); /* Rahmen wird Orange */
+      color: var(--primary-color);        /* Text wird Orange */
+      background: rgba(255, 152, 0, 0.1); /* Ganz leichter oranger Hintergrund */
+      transform: translateY(-2px);
+    }
+  }
+}

@@ -1,0 +1,39 @@
+<div class="login-container">
+
+  <div class="login-card glass-panel">
+    <h1>Willkommen zurück! 👋</h1>
+    <p class="subtitle">Logg dich ein, um deine Küche zu managen.</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <div class="form-group">
+        <label>E-Mail Adresse</label>
+        <input type="email" formControlName="email" placeholder="chefkoch@example.com">
+      </div>
+
+      <div class="form-group">
+        <label>Passwort</label>
+        <input type="password" formControlName="password" placeholder="••••••••">
+      </div>
+
+      @if (errorMessage) {
+        <div class="error-msg">{{ errorMessage }}</div>
+      }
+
+      <button type="submit" [disabled]="loginForm.invalid || isLoading" class="login-btn">
+        {{ isLoading ? 'Lade...' : 'Einloggen 🚀' }}
+      </button>
+
+    </form>
+
+    <div class="footer-links">
+      <a routerLink="/register" class="register-link">Noch kein Konto? Registrieren ✨</a>
+
+      <div class="separator"></div>
+
+      <a routerLink="/" class="back-link">← Als Gast fortfahren</a>
+    </div>
+
+  </div>
+
+</div>

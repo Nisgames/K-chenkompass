@@ -1,5 +1,23 @@
 <div class="container">
-  <h1 class="app-title">KochKompass <span class="compass-icon">🧭</span></h1>
+
+  <header class="main-header">
+    <h1 class="app-title">KochKompass <span class="compass-icon">🧭</span></h1>
+
+    @if (authService.currentUser()) {
+      <div class="user-controls glass-panel">
+        <span class="user-name">👤 {{ authService.currentUser()?.email }}</span>
+        <button (click)="logout()" class="logout-btn">Logout 🚪</button>
+      </div>
+    } @else {
+
+    <div class="guest-controls">
+      <a routerLink="/register" class="register-btn">Registrieren ✨</a>
+
+      <a routerLink="/login" class="login-link">Login 🔐</a>
+    </div>
+
+  }
+  </header>
 
   <router-outlet></router-outlet>
 </div>

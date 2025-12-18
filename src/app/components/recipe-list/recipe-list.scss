@@ -32,6 +32,7 @@
   }
 
   input {
+    box-sizing: border-box;
     width: 100%;
     padding: 12px 15px 12px 45px; /* Platz für das Icon links */
     background: rgba(255, 255, 255, 0.1) !important; /* Heller als vorher */
@@ -212,10 +213,17 @@
 @media (max-width: 700px) {
   .control-bar {
     flex-direction: column;
-    align-items: stretch; /* Volle Breite */
+    align-items: stretch;
+
+    /* NEU: Weniger Padding an den Seiten auf dem Handy (15px statt 25px) */
+    padding: 15px;
   }
 
-  .search-wrapper { max-width: 100%; }
+  .search-wrapper {
+    /* NEU: Breite explizit setzen, damit flex-grow nicht raten muss */
+    width: 100%;
+    max-width: 100%;
+  }
 
   .filter-wrapper {
     justify-content: center;

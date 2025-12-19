@@ -49,6 +49,40 @@
   }
 }
 
+/* --- STYLING FÜR DAS ICON --- */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Abstand zwischen Glühbirne und Text */
+}
+
+.wake-badge {
+  /* Glas-Look + Rund */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+
+  /* Der Clou: Ein kleiner Schein nach außen */
+  box-shadow: 0 0 15px rgba(255, 255, 0, 0.3);
+
+  /* Eine sanfte Animation (Pulsieren) */
+  animation: pulse-glow 3s infinite ease-in-out;
+  cursor: help; /* Zeigt Fragezeichen/Info beim Hover */
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 10px rgba(255, 255, 0, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(255, 255, 0, 0.6); transform: scale(1.05); }
+  100% { box-shadow: 0 0 10px rgba(255, 255, 0, 0.2); }
+}
+
 /* --- PROGRESS BAR --- */
 .progress-track {
   height: 6px;

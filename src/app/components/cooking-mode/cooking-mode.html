@@ -11,10 +11,20 @@
        (swiperight)="prevStep()">
 
     <div class="top-bar">
-      <div class="recipe-info">
-        <span class="recipe-title">{{ recipe.title }}</span>
-        <span class="step-counter">Schritt {{ currentStepIndex + 1 }} / {{ recipe.steps.length }}</span>
+
+      <div class="header-left">
+        @if (wakeLock) {
+          <div class="wake-badge" title="Display bleibt an! 💡">
+            💡
+          </div>
+        }
+
+        <div class="recipe-info">
+          <span class="recipe-title">{{ recipe.title }}</span>
+          <span class="step-counter">Schritt {{ currentStepIndex + 1 }} / {{ recipe.steps.length }}</span>
+        </div>
       </div>
+
       <button (click)="exit()" class="close-btn">✕ Beenden</button>
     </div>
 

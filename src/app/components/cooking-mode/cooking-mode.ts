@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RecipeService } from '../../services/recipe';
@@ -12,7 +12,7 @@ import { HammerModule } from '@angular/platform-browser';
   templateUrl: './cooking-mode.html', // <--- Pfad anpassen
   styleUrl: './cooking-mode.scss'      // <--- Pfad anpassen
 })
-export class CookingModeComponent implements OnInit {
+export class CookingModeComponent implements OnInit, OnDestroy {
 
   recipe: Recipe | undefined;
   currentStepIndex: number = 0; // Wir starten bei Schritt 0 (Erster Schritt)
@@ -22,6 +22,7 @@ export class CookingModeComponent implements OnInit {
   private router = inject(Router);
   private recipeService = inject(RecipeService);
   private cd = inject(ChangeDetectorRef);
+  public wakeLock: any = null;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -39,6 +40,12 @@ export class CookingModeComponent implements OnInit {
         }
       });
     }
+    this.requestWakeLock();
+  }
+
+  ngOnDestroy(): void {
+    // NEU: Wake Lock freigeben, wenn wir die Komponente verlassen
+    this.releaseWakeLock();
   }
 
   // --- NAVIGATION ---
@@ -47,6 +54,37 @@ export class CookingModeComponent implements OnInit {
   nextStep() {
     if (this.recipe && this.currentStepIndex < this.recipe.steps.length - 1) {
       this.currentStepIndex++;
+    }
+  }
+
+  // NEU: Reagieren, wenn der User den Tab wechselt oder minimiert
+  @HostListener('document:visibilitychange')
+  onVisibilityChange() {
+    if (document.visibilityState === 'visible') {
+      // Wenn User zurückkommt: Versuch, den Lock wieder zu holen
+      this.requestWakeLock();
+    }
+  }
+
+  // --- WAKE LOCK LOGIC ---
+  private async requestWakeLock() {
+    try {
+      // Prüfen, ob der Browser das kann
+      if ('wakeLock' in navigator) {
+        // @ts-ignore (Falls TS meckert, dass es navigator.wakeLock nicht kennt)
+        this.wakeLock = await navigator.wakeLock.request('screen');
+        console.log('💡 Display bleibt an!');
+      }
+    } catch (err) {
+      console.warn('Wake Lock fehlgeschlagen:', err);
+    }
+  }
+
+  private async releaseWakeLock() {
+    if (this.wakeLock !== null) {
+      await this.wakeLock.release();
+      this.wakeLock = null;
+      console.log('🌑 Display darf wieder schlafen.');
     }
   }
 

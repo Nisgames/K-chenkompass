@@ -5,7 +5,10 @@
 
     @if (authService.currentUser()) {
       <div class="user-controls glass-panel">
-        <span class="user-name">👤 {{ authService.currentUser()?.username }}</span>
+        <a routerLink="/profile" class="user-link">
+          👤 {{ authService.currentUser()?.username }}
+        </a>
+
         <button (click)="logout()" class="logout-btn">Logout 🚪</button>
       </div>
     } @else {

@@ -220,3 +220,72 @@
   &:disabled { opacity: 0.5; cursor: not-allowed; }
   &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,152,0,0.5); }
 }
+/* Toggle Switch Styling */
+/* Toggle Switch Styling */
+/* WICHTIG: Wir nutzen "label.toggle-switch", damit es stärker ist als ".form-group label" */
+/* WICHTIG: Ersetze deinen bestehenden 'label.toggle-switch' Block komplett hiermit: */
+
+label.toggle-switch {
+  display: flex !important;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  margin-top: 10px;
+  width: auto;
+  margin-bottom: 0;
+
+  input { display: none; }
+
+  /* Der Hintergrund (die Schiene) */
+  .slider {
+    flex-shrink: 0;
+    width: 44px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    position: relative;
+    transition: 0.3s;
+
+    /* Der Knopf (die Kugel) */
+    &::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+
+      /* FIX: Perfekte Zentrierung */
+      top: 0;
+      bottom: 0;
+      margin: auto 0;
+      left: 3px;
+
+      background: #ccc;
+      border-radius: 50%;
+      transition: 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+  }
+
+  /* Status: AN (Checked) */
+  input:checked + .slider {
+    background: rgba(255, 152, 0, 0.3);
+    border-color: var(--primary-color);
+
+    &::before {
+      transform: translateX(20px);
+      background: var(--primary-color);
+      box-shadow: 0 0 10px var(--primary-color);
+    }
+  }
+
+  .label-text {
+    font-size: 1rem;
+    color: #eee;
+    font-weight: normal;
+  }
+
+  &:hover .slider {
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+}

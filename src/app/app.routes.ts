@@ -6,6 +6,7 @@ import { CookingModeComponent } from './components/cooking-mode/cooking-mode';
 import {LoginComponent} from './components/login/login';
 import { authGuard } from './guards/auth.guard';
 import {RegisterComponent} from './components/register/register';
+import {UserProfileComponent} from './components/user-profile/user-profile';
 
 export const routes: Routes = [
   { path: '', component: RecipeList },
@@ -20,6 +21,11 @@ export const routes: Routes = [
     path: 'recipe/:id/edit',
     component: RecipeEditor,
     canActivate: [authGuard]
+  },
+  {
+    path: 'profile',
+    component: UserProfileComponent,
+    canActivate: [authGuard] // Nur für eingeloggte User
   },
 
   { path: 'register', component: RegisterComponent },

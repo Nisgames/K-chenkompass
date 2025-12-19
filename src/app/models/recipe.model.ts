@@ -17,7 +17,7 @@ export interface Recipe {
 
   // Diese Felder hattest du definiert, passe sie ggf. an deine DB an
   category: 'Herzhaft' | 'Süß';
-
+  isPrivate: boolean;
   // WICHTIG: Hier stand vorher Ingredient[].
   // Da PocketBase simple Strings speichert ["500g Mehl"], muss das hier string[] sein!
   ingredients: string[];

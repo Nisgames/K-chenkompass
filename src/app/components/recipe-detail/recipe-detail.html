@@ -7,6 +7,10 @@
   @else {
     <div class="detail-page">
 
+      <div class="nav-row container">
+        <button routerLink="/" class="back-btn">← Zurück zur Übersicht</button>
+      </div>
+
       <div class="hero-header"
 
            [style.background-image]="'url(' + (recipe.imageUrl ? recipe.imageUrl : 'assets/images/placeholder-recipe.jpg') + ')'">
@@ -15,7 +19,14 @@
           <div class="hero-content">
 
             <div class="hero-text">
-              <span class="badge">{{ recipe.category }}</span>
+              <div class="badges-row" style="display:flex; gap:10px; margin-bottom:10px;">
+                <span class="badge">{{ recipe.category }}</span>
+
+                @if (recipe.isPrivate) {
+                  <span class="badge private-badge">🔒 Privat</span>
+                }
+              </div>
+
               <h1>{{ recipe.title }}</h1>
 
               <div class="meta-row">
@@ -25,7 +36,15 @@
               </div>
             </div>
 
-            <div class="hero-actions">
+            <div class="hero-actions" style="display: flex; gap: 15px; align-items: center;">
+
+              <button (click)="toggleFav()"
+                      class="fav-btn"
+                      [class.active]="isFavorite"
+                      title="Merken">
+                {{ isFavorite ? '❤️' : '🤍' }}
+              </button>
+
               <button [routerLink]="['/recipe', recipe.id, 'cook']" class="cook-btn">
                 👨‍🍳 Jetzt kochen!
               </button>
@@ -77,8 +96,6 @@
               }
             </ul>
           </div>
-
-          <button routerLink="/" class="back-btn">← Zurück zur Übersicht</button>
 
           @if (isOwner) {
             <button (click)="deleteRecipe()" class="delete-text-btn">Rezept löschen 🗑️</button>

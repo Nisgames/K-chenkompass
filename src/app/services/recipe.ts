@@ -61,6 +61,7 @@ export class RecipeService {
       durationMinutes: record.durationMinutes,
       servings: record.servings,
       category: record.category,
+      isPrivate: record.isPrivate,
       imageUrl: imageUrl, // Hier ist jetzt die fertige URL drin!
       ingredients: record.ingredients || [], // Falls leer, leeres Array
       steps: record.steps || [],
@@ -117,4 +118,58 @@ export class RecipeService {
     const promise = this.pb.collection('recipes').delete(id);
     return from(promise);
   }
+
+  getRecipesByAuthor(userId: string): Observable<Recipe[]> {
+    const promise = this.pb.collection('recipes').getFullList({
+      sort: '-created',
+      filter: `author = "${userId}"`, // <--- Der Filter-Trick
+      expand: 'author',
+    });
+
+    return from(promise).pipe(
+      map(records => records.map(r => this.mapRecordToRecipe(r)))
+    );
+  }
+
+  // 6. Favoriten umschalten (Like / Unlike)
+  // Wir geben zurück, ob es jetzt favorisiert ist (true) oder nicht (false)
+  async toggleFavorite(userId: string, recipeId: string): Promise<boolean> {
+
+    // 1. Aktuellen User holen, um zu schauen, wie der Status IST
+    const user = await this.pb.collection('users').getOne(userId);
+    const favorites = user['favoriteRecipes'] || [];
+    const isFavorite = favorites.includes(recipeId);
+
+    // 2. Status umkehren
+    if (isFavorite) {
+      // Entfernen (-)
+      await this.pb.collection('users').update(userId, {
+        'favoriteRecipes-': recipeId
+      });
+      return false; // Jetzt nicht mehr Favorit
+    } else {
+      // Hinzufügen (+)
+      await this.pb.collection('users').update(userId, {
+        'favoriteRecipes+': recipeId
+      });
+      return true; // Jetzt Favorit
+    }
+  }
+
+  // 7. Nur die Favoriten laden (fürs Profil)
+  getFavoriteRecipes(userId: string): Observable<Recipe[]> {
+    // Wir laden den User und "expanden" das Feld favoriteRecipes
+    const promise = this.pb.collection('users').getOne(userId, {
+      expand: 'favoriteRecipes'
+    });
+
+    return from(promise).pipe(
+      map(user => {
+        const favs = user.expand?.['favoriteRecipes'] || [];
+        // Mappen wie gewohnt
+        return favs.map((r: any) => this.mapRecordToRecipe(r));
+      })
+    );
+  }
+
 }

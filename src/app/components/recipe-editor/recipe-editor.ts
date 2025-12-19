@@ -37,6 +37,7 @@ export class RecipeEditor implements OnInit {
       durationMinutes: [30, [Validators.required, Validators.min(1)]],
       servings: [2, [Validators.required, Validators.min(1)]],
       category: ['Herzhaft'],
+      isPrivate: [false],
       ingredients: this.fb.array([]),
       steps: this.fb.array([])
     });
@@ -69,7 +70,8 @@ export class RecipeEditor implements OnInit {
           title: recipe.title,
           durationMinutes: recipe.durationMinutes,
           servings: recipe.servings,
-          category: recipe.category
+          category: recipe.category,
+          isPrivate: recipe.isPrivate
         });
 
         // 2. Bild Vorschau (falls vorhanden)
@@ -169,7 +171,7 @@ export class RecipeEditor implements OnInit {
     formData.append('durationMinutes', formValue.durationMinutes);
     formData.append('servings', formValue.servings);
     formData.append('category', formValue.category);
-
+    formData.append('isPrivate', String(formValue.isPrivate));
     // Bild nur anhängen, wenn ein NEUES gewählt wurde
     if (this.selectedFile) {
       formData.append('imageUrl', this.selectedFile);

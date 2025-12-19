@@ -29,6 +29,10 @@ export class RecipeDetail implements OnInit {
   currentServings: number = 1;
   isLoading: boolean = true;
 
+  // Status für das Herz
+  isFavorite = false;
+  isToggling = false;
+
   private route = inject(ActivatedRoute);
   private recipeService = inject(RecipeService);
   private cd = inject(ChangeDetectorRef);
@@ -53,6 +57,7 @@ export class RecipeDetail implements OnInit {
           this.recipe = data;
           this.currentServings = this.recipe.servings;
           this.parseIngredients();
+          this.checkIfFavorite();
           this.isLoading = false; // Laden fertig
           this.cd.detectChanges(); // Ansicht aktualisieren!
         },
@@ -65,6 +70,44 @@ export class RecipeDetail implements OnInit {
       });
     } else {
       this.isLoading = false;
+    }
+  }
+
+  // NEU: Prüfen beim Start
+  checkIfFavorite() {
+    const currentUser = this.authService.currentUser();
+    if (this.recipe && currentUser) {
+      // Wir schauen direkt ins Auth-Model, das ist am schnellsten
+      const favs = currentUser['favoriteRecipes'] || [];
+      this.isFavorite = favs.includes(this.recipe.id);
+    }
+  }
+
+  // NEU: Klick Handler
+  async toggleFav() {
+    if (this.isToggling || !this.recipe) return;
+
+    const currentUser = this.authService.currentUser();
+    if (!currentUser) return;
+
+    this.isToggling = true;
+
+    // Optimistisches UI-Update (sofort umschalten, bevor Server antwortet)
+    this.isFavorite = !this.isFavorite;
+
+    try {
+      const result = await this.recipeService.toggleFavorite(currentUser.id, this.recipe.id);
+      this.isFavorite = result; // Sicherstellen, dass der Server-Stand stimmt
+
+      // Auth Store refreshen (damit die Liste im Hintergrund aktuell bleibt)
+      await this.authService.pb.collection('users').authRefresh();
+
+    } catch (err) {
+      console.error(err);
+      this.isFavorite = !this.isFavorite; // Rollback bei Fehler
+    } finally {
+      this.isToggling = false;
+      this.cd.detectChanges();
     }
   }
 

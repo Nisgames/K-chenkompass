@@ -1,7 +1,63 @@
 @use 'glass-theme' as glass;
 
-/* ... dein bestehender Code ... */
+/* --- GANZ OBEN EINFÜGEN --- */
 
+.fav-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%; /* Kreis */
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy Effekt */
+  display: flex; align-items: center; justify-content: center;
+
+  &:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.1);
+  }
+
+  &:active { transform: scale(0.9); }
+
+  /* Wenn aktiv (Favorit) */
+  &.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #ff4081; /* Pinker Rand */
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.4);
+    transform: scale(1.05);
+  }
+}
+
+/* Damit der Button schön ausgerichtet ist (nutzt Bootstrap 'container' Klasse im HTML) */
+.nav-row {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* --- UPDATE BEI .back-btn --- */
+/* Suche deine bestehende .back-btn Klasse und ersetze sie oder pass sie an: */
+
+.back-btn {
+  /* margin-top: 20px; <--- LÖSCHEN (oder auf 0 setzen), wir haben jetzt .nav-row */
+  margin-top: 0;
+
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 8px 20px; /* Etwas breiter, wie im Profil */
+  border-radius: 20px;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+
+  &:hover {
+    color: white;
+    border-color: white;
+    background: rgba(255,255,255,0.05);
+    transform: translateX(-3px); /* Der kleine Wisch-Effekt nach links */
+  }
+}
 /* --- FAB (Floating Action Button) --- */
 .fab-edit-btn {
   /* Fixierte Position unten rechts */
@@ -455,4 +511,9 @@
     transform: translateY(-1px);
     text-shadow: 0 0 10px rgba(255, 68, 68, 0.4);
   }
+}
+
+.private-badge {
+  background: #444 !important; /* Grau statt Orange */
+  border: 1px solid #666;
 }

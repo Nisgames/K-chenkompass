@@ -54,13 +54,21 @@
             </div>
 
             <ul class="ingredient-list">
-              @for (ingredient of recipe.ingredients; track $index) {
+              @for (item of parsedIngredients; track $index) {
                 <li class="ingredient-item">
                   <label class="checkbox-wrapper">
                     <input type="checkbox">
                     <span class="checkmark"></span>
                     <span class="text">
-                      {{ ingredient }}
+                      @if (item.originalAmount !== null && recipe) {
+                        <strong>
+                          {{ (item.originalAmount / recipe.servings * currentServings) | number:'1.0-2' }}
+                        </strong>
+                        {{ item.text }}
+                      }
+                      @else {
+                        {{ item.fullString }}
+                      }
                     </span>
                   </label>
                 </li>

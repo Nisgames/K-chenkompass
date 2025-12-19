@@ -7,6 +7,12 @@ import { RecipeService } from '../../services/recipe';
 import { Recipe } from '../../models/recipe.model';
 import {AuthService} from '../../services/auth';
 
+interface ParsedIngredient {
+  originalAmount: number | null;
+  text: string; // Einheit + Name (z.B. "g Mehl")
+  fullString: string; // Fallback, falls keine Zahl gefunden wurde (z.B. "Salz")
+}
+
 @Component({
   selector: 'app-recipe-detail',
   standalone: true,
@@ -18,6 +24,7 @@ export class RecipeDetail implements OnInit {
 
   recipe: Recipe | undefined;
 
+  parsedIngredients: ParsedIngredient[] = [];
   // Für den Portionsrechner (Standardwert, wird gleich überschrieben)
   currentServings: number = 1;
   isLoading: boolean = true;
@@ -45,6 +52,7 @@ export class RecipeDetail implements OnInit {
         next: (data) => {
           this.recipe = data;
           this.currentServings = this.recipe.servings;
+          this.parseIngredients();
           this.isLoading = false; // Laden fertig
           this.cd.detectChanges(); // Ansicht aktualisieren!
         },
@@ -59,6 +67,40 @@ export class RecipeDetail implements OnInit {
       this.isLoading = false;
     }
   }
+
+  // NEU: Hilfsfunktion zum Zerlegen der Strings
+  private parseIngredients() {
+    if (!this.recipe) return;
+
+    this.parsedIngredients = this.recipe.ingredients.map(ing => {
+      // Regex sucht nach einer Zahl am Anfang (erlaubt "1.5", "1,5", "100")
+      // ^([\d.,]+) -> Gruppe 1: Die Zahl
+      // \s+(.*)    -> Gruppe 2: Der Rest (Einheit + Name)
+      const match = ing.match(/^([\d.,]+)\s+(.*)$/);
+
+      if (match) {
+        // Komma zu Punkt konvertieren für JS-Math
+        const rawNum = match[1].replace(',', '.');
+        const number = parseFloat(rawNum);
+
+        if (!isNaN(number)) {
+          return {
+            originalAmount: number,
+            text: match[2],     // z.B. "EL Olivenöl"
+            fullString: ing
+          };
+        }
+      }
+
+      // Fallback: Keine Zahl gefunden (z.B. "Salz und Pfeffer")
+      return {
+        originalAmount: null,
+        text: ing,
+        fullString: ing
+      };
+    });
+  }
+
   deleteRecipe() {
     // Einfache Sicherheitsabfrage
     if (confirm('Bist du sicher, dass du dieses Rezept löschen möchtest? 🗑️\nDas kann nicht rückgängig gemacht werden!')) {

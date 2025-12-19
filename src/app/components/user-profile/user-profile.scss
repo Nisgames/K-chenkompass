@@ -1,0 +1,120 @@
+@use 'glass-theme' as glass;
+
+.nav-row {
+  margin-bottom: 20px; /* Abstand zur Profil-Karte */
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #aaa;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+
+  /* Kleines Icon-Feeling beim Hover */
+  &:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: white;
+    color: white;
+    transform: translateX(-3px); /* Bewegt sich leicht nach links */
+  }
+}
+
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 50px;
+}
+
+/* --- HEADER --- */
+.profile-header {
+  @include glass.glass-panel-styles;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 40px;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  background: rgba(255,255,255,0.05);
+
+  .avatar-circle {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), #ff4081);
+    color: white;
+    font-size: 3rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 30px rgba(255, 152, 0, 0.4);
+    border: 3px solid rgba(255,255,255,0.2);
+  }
+
+  .user-info {
+    h1 { margin: 0; font-size: 2.5rem; color: white; }
+    .stats { color: #aaa; margin-top: 10px; font-size: 1.1rem; }
+  }
+}
+
+.section-title {
+  margin-bottom: 20px;
+  border-left: 5px solid var(--primary-color);
+  padding-left: 15px;
+  color: #ddd;
+}
+
+/* --- GRID & CARDS (Kopie/Anpassung vom List-Style) --- */
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.recipe-card {
+  @include glass.glass-panel-styles;
+  background: rgba(255,255,255,0.08);
+  display: flex; flex-direction: column;
+  overflow: hidden; cursor: pointer;
+  transition: transform 0.2s;
+  height: 100%;
+
+  &:hover { transform: translateY(-5px); background: rgba(255,255,255,0.12); }
+
+  .card-image {
+    height: 180px; background-size: cover; background-position: center;
+    position: relative; /* Für Badge */
+  }
+
+  /* Status Badge oben rechts im Bild */
+  .status-badge {
+    position: absolute; top: 10px; right: 10px;
+    padding: 4px 8px; border-radius: 6px;
+    font-size: 0.75rem; font-weight: bold; color: white;
+    backdrop-filter: blur(4px); box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+
+    &.private { background: rgba(0,0,0,0.6); border: 1px solid #666; }
+    &.public { background: rgba(var(--primary-color), 0.8); border: 1px solid orange; }
+  }
+
+  .card-content {
+    padding: 20px; flex-grow: 1; display: flex; flex-direction: column;
+    h3 { margin: 0 0 15px 0; font-size: 1.2rem; }
+
+    .meta-info {
+      margin-top: auto; display: flex; justify-content: space-between; color: #aaa; font-size: 0.9rem;
+      .category-badge { background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 10px; color: white; }
+    }
+  }
+}
+
+/* Mobile Anpassung */
+@media (max-width: 700px) {
+  .profile-header {
+    flex-direction: column; text-align: center;
+    .avatar-circle { width: 80px; height: 80px; font-size: 2.5rem; }
+  }
+}
+
+.empty-state { text-align: center; padding: 40px; button { margin-top: 15px; } }

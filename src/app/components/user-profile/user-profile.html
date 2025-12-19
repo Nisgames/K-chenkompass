@@ -1,0 +1,82 @@
+<div class="profile-container">
+
+  <div class="nav-row">
+    <button routerLink="/" class="back-btn">← Zurück zur Übersicht</button>
+  </div>
+
+  <div class="profile-header glass-panel">
+    <div class="avatar-circle">
+      {{ authService.currentUser()?.username?.charAt(0)?.toUpperCase() || '?' }}
+    </div>
+
+    <div class="user-info">
+      <h1>{{ authService.currentUser()?.username }}</h1>
+      <p class="stats">
+        👨‍🍳 Chefkoch • {{ myRecipes.length }} Rezepte erstellt
+      </p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Meine Sammlung 📚</h2>
+
+  @if (isLoading) {
+    <div class="loading">Lade deine Meisterwerke... ⏳</div>
+  } @else {
+    <div class="recipe-grid">
+      @for (recipe of myRecipes; track recipe.id) {
+        <div class="recipe-card" [routerLink]="['/recipe', recipe.id]">
+
+          <div class="card-image"
+               [style.background-image]="'url(' + (recipe.imageUrl ? recipe.imageUrl : 'assets/images/placeholder-recipe.jpg') + ')'">
+
+            @if (recipe.isPrivate) {
+              <span class="status-badge private">🔒 Privat</span>
+            } @else {
+              <span class="status-badge public">🌍 Öffentlich</span>
+            }
+          </div>
+
+          <div class="card-content">
+            <h3>{{ recipe.title }}</h3>
+            <div class="meta-info">
+              <span class="category-badge">{{ recipe.category }}</span>
+              <span class="duration">⏱ {{ recipe.durationMinutes }} Min.</span>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="empty-state glass-panel">
+          <p>Du hast noch keine Rezepte erstellt. 🤷‍♂️</p>
+          <button routerLink="/recipe/new" class="create-btn">Jetzt erstes Rezept anlegen</button>
+        </div>
+      }
+    </div>
+  }
+
+  <h2 class="section-title" style="margin-top: 50px; border-color: #ff4081;">
+    Gemerkte Rezepte ❤️
+  </h2>
+
+  <div class="recipe-grid">
+    @for (recipe of favoriteRecipes; track recipe.id) {
+      <div class="recipe-card" [routerLink]="['/recipe', recipe.id]">
+        <div class="card-image"
+             [style.background-image]="'url(' + (recipe.imageUrl ? recipe.imageUrl : 'assets/images/placeholder-recipe.jpg') + ')'">
+        </div>
+        <div class="card-content">
+          <h3>{{ recipe.title }}</h3>
+          <div class="meta-info">
+            <span class="category-badge">{{ recipe.category }}</span>
+            <span class="duration">⏱ {{ recipe.durationMinutes }} Min.</span>
+          </div>
+        </div>
+      </div>
+
+    } @empty {
+      <div class="empty-state glass-panel">
+        <p>Noch keine Favoriten. Geh auf Entdeckungstour! 🔭</p>
+      </div>
+    }
+  </div>
+
+</div>

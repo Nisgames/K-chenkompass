@@ -122,47 +122,67 @@
 }
 
 /* --- OVERLAY STYLING --- */
+/* --- OVERLAY / SIDEBAR STYLING --- */
 .ingredients-overlay {
   position: fixed;
-  inset: 0; /* Deckt alles ab */
-  z-index: 2000; /* Muss ÜBER allem liegen (cooking-container ist 1000) */
+  inset: 0;
+  z-index: 2000;
 
-  /* Dunkler Hintergrund, damit man sich auf die Liste fokussiert */
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(5px); /* Extra Blur für den Hintergrund */
+  /* Der Hintergrund wird nur leicht abgedunkelt, nicht so stark wie beim Modal */
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  /* Flexbox brauchen wir hier nicht mehr zum Zentrieren,
+     da die Sidebar absolut positioniert wird. */
 
-  /* Einfache Fade-In Animation */
-  animation: fadeIn 0.2s ease-out;
+  /* Fade-In für den Hintergrund */
+  animation: fadeIn 0.3s ease-out;
 }
 
 .ingredients-card {
   @include glass.glass-panel-styles;
-  background: rgba(30, 30, 30, 0.85); /* Etwas undurchsichtiger für Lesbarkeit */
-  max-width: 500px;
-  width: 100%;
-  max-height: 80vh; /* Nicht größer als der Screen */
+
+  /* POSITIONIERUNG: Rechts angedockt */
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0; /* Volle Höhe */
+
+  /* BREITE: Auf Mobile fast voll, auf Desktop angenehm schmal */
+  width: 85%;
+  max-width: 400px;
+
+  /* DESIGN ANPASSUNGEN */
+  border-radius: 20px 0 0 20px; /* Nur links abrunden */
+  border-right: none; /* Rechts kein Rand nötig */
+  background: rgba(30, 30, 30, 0.95); /* Fast blickdicht für Lesbarkeit */
+
   padding: 30px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  box-shadow: -10px 0 30px rgba(0,0,0,0.5); /* Schatten wirft nach links */
+
+  /* ANIMATION: Von rechts reinfahren */
+  animation: slideInRight 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 
   h3 {
-    margin-top: 0;
+    margin-top: 10px; /* Bissel Platz wegen der Statusbar oben */
     color: var(--primary-color);
-    text-align: center;
+    text-align: left; /* Links sieht in Sidebar oft besser aus */
     margin-bottom: 20px;
     font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
+  /* ... ing-list Styles bleiben gleich (oder werden vererbt) ... */
+
   .close-overlay-btn {
-    margin-top: 20px;
-    padding: 12px;
+    /* Den Button kleben wir unten fest oder lassen ihn am Ende der Liste */
+    margin-top: auto; /* Drückt ihn nach ganz unten */
+    padding: 15px;
     background: var(--primary-color);
     border: none;
     border-radius: 12px;
@@ -171,11 +191,20 @@
     font-size: 1rem;
     cursor: pointer;
     width: 100%;
-    transition: transform 0.1s;
 
-    &:hover { background: #fb8c00; }
     &:active { transform: scale(0.98); }
   }
+}
+
+/* NEUE KEYFRAMES */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); } /* Startet außerhalb rechts */
+  to { transform: translateX(0); }      /* Endet auf Position */
 }
 
 /* Animationen Keyframes */

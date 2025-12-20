@@ -20,6 +20,8 @@ export class CookingModeComponent implements OnInit, OnDestroy {
 
   // NEU: Steuert das Zutaten-Overlay
   showIngredients = false;
+// NEU: Ein Set, das speichert, welche Zutaten (Indices) gerade "aktiv" sind
+  activeIngredientIndices = new Set<number>();
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -33,6 +35,7 @@ export class CookingModeComponent implements OnInit, OnDestroy {
       this.recipeService.getRecipeById(id).subscribe({
         next: (data) => {
           this.recipe = data;
+          this.checkIngredientsForStep();
           this.isLoading = false; // Fertig!
           this.cd.detectChanges(); // Update erzwingen
         },
@@ -56,12 +59,46 @@ export class CookingModeComponent implements OnInit, OnDestroy {
     this.showIngredients = !this.showIngredients;
   }
 
+  // --- HELPER: TEXT ANALYSE ---
+  private checkIngredientsForStep() {
+    if (!this.recipe) return;
+
+    const currentStepText = this.recipe.steps[this.currentStepIndex].toLowerCase();
+    this.activeIngredientIndices.clear();
+
+    this.recipe.ingredients.forEach((ing, index) => {
+      let cleanName = ing.toLowerCase();
+
+      // SCHRITT 1: Zahlen und Sonderzeichen weg (bleibt gleich)
+      cleanName = cleanName.replace(/[\d,.]+/g, '');
+
+      // SCHRITT 2 (FIX): Einheiten nur als GANZES Wort entfernen!
+      // \b steht für "Wortgrenze". So bleibt das 'l' in 'Milch' am Leben.
+      const unitsRegex = /\b(g|kg|ml|l|el|tl|stk|bund|prise|pck|dose)\b/g;
+      cleanName = cleanName.replace(unitsRegex, '').trim();
+
+      // Sicherheits-Check: Ist noch was übrig?
+      if (cleanName.length < 2) return;
+
+      // SCHRITT 3: Prüfen
+      const parts = cleanName.split(' ');
+      const isMatch = parts.some(part =>
+        part.length > 2 && currentStepText.includes(part)
+      );
+
+      if (isMatch) {
+        this.activeIngredientIndices.add(index);
+      }
+    });
+  }
+
   // --- NAVIGATION ---
 
   // Gehe einen Schritt weiter
   nextStep() {
     if (this.recipe && this.currentStepIndex < this.recipe.steps.length - 1) {
       this.currentStepIndex++;
+      this.checkIngredientsForStep();
     }
   }
 
@@ -100,6 +137,7 @@ export class CookingModeComponent implements OnInit, OnDestroy {
   prevStep() {
     if (this.currentStepIndex > 0) {
       this.currentStepIndex--;
+      this.checkIngredientsForStep();
     }
   }
 

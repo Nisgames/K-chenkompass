@@ -2,6 +2,103 @@
 
 /* ... bestehendes CSS ... */
 
+/* In cooking-mode.scss */
+
+/* In src/app/components/cooking-mode/cooking-mode.scss */
+
+.ing-list {
+  /* Grundeinstellungen */
+  list-style: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  /* Scroll-Verhalten & Schatten-Schutz */
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 15px 20px; /* Platz für den Schatten, damit er nicht abgeschnitten wird */
+
+  /* --- Styles für die Listen-Elemente --- */
+  li {
+    /* Basis-Styling für ALLE Items (auch die nicht aktiven) */
+    transition: all 0.3s;
+    border-radius: 8px;
+    padding: 10px;
+    opacity: 1;
+    border: 1px solid transparent; /* Platzhalter, damit es beim Highlight nicht hüpft */
+
+    /* Damit Checkbox und Text schön nebeneinander stehen */
+    label {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+      width: 100%; /* Klickbereich maximieren */
+    }
+
+    /* Checkbox Styling */
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary-color);
+      cursor: pointer;
+      flex-shrink: 0; /* Verhindert Quetschen der Box */
+    }
+
+    .text {
+      font-size: 1.1rem;
+      color: #eee;
+      line-height: 1.4;
+    }
+
+    /* --- ZUSTAND 1: HIGHLIGHT (Neon-Look) --- */
+    &.highlight {
+      /* Hintergrund Verlauf */
+      background: linear-gradient(
+          90deg,
+          rgba(255, 152, 0, 0.25) 0%,
+          rgba(255, 152, 0, 0.05) 100%
+      );
+
+      /* Leuchtender Rahmen */
+      border: 1px solid rgba(255, 152, 0, 0.5);
+      border-left: 4px solid var(--primary-color);
+
+      /* Glow-Effekt */
+      box-shadow:
+        0 0 15px rgba(255, 152, 0, 0.2),
+        inset 0 0 10px rgba(255, 152, 0, 0.1);
+
+      font-weight: bold;
+      animation: neonPulse 2s infinite alternate ease-in-out;
+
+      .text {
+        color: white;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      }
+    }
+
+    /* --- ZUSTAND 2: DIMMED (Ausgegraut) --- */
+    &.dimmed {
+      opacity: 0.4;
+      order: 10; /* Schiebt es nach unten */
+
+      &:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.05); /* Leichtes Feedback beim Hover */
+      }
+    }
+  }
+}
+
+/* WICHTIG: Damit 'order' funktioniert, muss die Liste eine Flexbox sein */
+.ing-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 /* Button Styling für den neuen Zutaten Button (wie close-btn) */
 .icon-btn {
   background: rgba(255,255,255,0.08);
@@ -61,40 +158,6 @@
     text-align: center;
     margin-bottom: 20px;
     font-size: 1.5rem;
-  }
-
-  .ing-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    overflow-y: auto; /* Scrollbar wenn Liste lang ist */
-    flex: 1; /* Nimmt restlichen Platz */
-
-    li {
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-
-      &:last-child { border-bottom: none; }
-
-      label {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        cursor: pointer;
-
-        input[type="checkbox"] {
-          width: 20px;
-          height: 20px;
-          accent-color: var(--primary-color);
-          cursor: pointer;
-        }
-
-        .text {
-          font-size: 1.1rem;
-          color: #eee;
-        }
-      }
-    }
   }
 
   .close-overlay-btn {
@@ -345,5 +408,19 @@
     gap: 15px;
     .nav-btn.primary { width: 100%; max-width: none; }
     .nav-btn.secondary { border: none; }
+  }
+}
+
+/* --- ANIMATIONEN --- */
+@keyframes neonPulse {
+  0% {
+    /* Kleiner Schein */
+    box-shadow: 0 0 15px rgba(255, 152, 0, 0.3), inset 0 0 5px rgba(255, 152, 0, 0.1);
+    border-color: rgba(255, 152, 0, 0.5);
+  }
+  100% {
+    /* Großer Schein, aber mehr Blur (25px) und etwas transparenter */
+    box-shadow: 0 0 15px rgba(255, 152, 0, 0.6), inset 0 0 15px rgba(255, 152, 0, 0.2);
+    border-color: rgba(255, 152, 0, 0.9);
   }
 }

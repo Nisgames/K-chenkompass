@@ -60,11 +60,17 @@
           <h3>Benötigte Zutaten 🥗</h3>
 
           <ul class="ing-list">
-            @for (ing of recipe.ingredients; track ing) {
-              <li>
+            @for (ing of recipe.ingredients; track ing; let i = $index) {
+              <li [class.highlight]="activeIngredientIndices.has(i)"
+                  [class.dimmed]="activeIngredientIndices.size > 0 && !activeIngredientIndices.has(i)">
+
                 <label>
                   <input type="checkbox">
                   <span class="text">{{ ing }}</span>
+
+                  @if (activeIngredientIndices.has(i)) {
+                    <span class="match-icon">👈</span>
+                  }
                 </label>
               </li>
             }

@@ -186,7 +186,18 @@ export class RecipeEditor implements OnInit {
     }
 
     // Listen konvertieren
-    const formattedIngredients = formValue.ingredients
+    // 1. Kopie der Zutaten erstellen und sortieren
+    const sortedIngredients = [...formValue.ingredients].sort((a: any, b: any) => {
+      // Wir wandeln alles in Zahlen um. Fallback auf 0, falls leer.
+      const amountA = parseFloat(a.amount) || 0;
+      const amountB = parseFloat(b.amount) || 0;
+
+      // Absteigend sortieren (Große Zahlen zuerst -> z.B. 500g vor 10g)
+      return amountB - amountA;
+    });
+
+    // 2. Die sortierte Liste formatieren und speichern
+    const formattedIngredients = sortedIngredients
       .map((ing: any) => {
         const parts = [];
         if (ing.amount) parts.push(ing.amount);

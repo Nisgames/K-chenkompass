@@ -14,9 +14,7 @@
 
       <div class="header-left">
         @if (wakeLock) {
-          <div class="wake-badge" title="Display bleibt an! 💡">
-            💡
-          </div>
+          <div class="wake-badge" title="Display bleibt an! 💡">💡</div>
         }
 
         <div class="recipe-info">
@@ -25,13 +23,17 @@
         </div>
       </div>
 
-      <button (click)="exit()" class="close-btn">✕ Beenden</button>
+      <div class="header-right" style="display: flex; gap: 10px;">
+        <button (click)="toggleIngredients()" class="icon-btn" title="Zutaten anzeigen">
+          📝 Zutaten
+        </button>
+
+        <button (click)="exit()" class="close-btn">✕ Beenden</button>
+      </div>
     </div>
 
     <div class="progress-track">
-      <div class="progress-fill"
-           [style.width.%]="((currentStepIndex + 1) / recipe.steps.length) * 100">
-      </div>
+      <div class="progress-fill" [style.width.%]="((currentStepIndex + 1) / recipe.steps.length) * 100"></div>
     </div>
 
     <div class="step-wrapper">
@@ -42,22 +44,38 @@
     </div>
 
     <div class="controls-bar">
-      <button (click)="prevStep()"
-              [style.visibility]="currentStepIndex === 0 ? 'hidden' : 'visible'"
-              class="nav-btn secondary">
-        ← Zurück
-      </button>
+      <button (click)="prevStep()" [style.visibility]="currentStepIndex === 0 ? 'hidden' : 'visible'" class="nav-btn secondary">← Zurück</button>
 
       @if (currentStepIndex < recipe.steps.length - 1) {
-        <button (click)="nextStep()" class="nav-btn primary big-action">
-          Nächster Schritt →
-        </button>
+        <button (click)="nextStep()" class="nav-btn primary big-action">Nächster Schritt →</button>
       } @else {
-        <button (click)="exit()" class="nav-btn success big-action">
-          Guten Appetit! 🎉
-        </button>
+        <button (click)="exit()" class="nav-btn success big-action">Guten Appetit! 🎉</button>
       }
     </div>
+
+
+    @if (showIngredients) {
+      <div class="ingredients-overlay" (click)="toggleIngredients()">
+        <div class="ingredients-card glass-panel" (click)="$event.stopPropagation()">
+          <h3>Benötigte Zutaten 🥗</h3>
+
+          <ul class="ing-list">
+            @for (ing of recipe.ingredients; track ing) {
+              <li>
+                <label>
+                  <input type="checkbox">
+                  <span class="text">{{ ing }}</span>
+                </label>
+              </li>
+            }
+          </ul>
+
+          <button (click)="toggleIngredients()" class="close-overlay-btn">
+            Weiter kochen
+          </button>
+        </div>
+      </div>
+    }
 
   </div>
 }

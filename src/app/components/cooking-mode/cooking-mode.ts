@@ -18,6 +18,9 @@ export class CookingModeComponent implements OnInit, OnDestroy {
   currentStepIndex: number = 0; // Wir starten bei Schritt 0 (Erster Schritt)
   isLoading: boolean = true;
 
+  // NEU: Steuert das Zutaten-Overlay
+  showIngredients = false;
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private recipeService = inject(RecipeService);
@@ -46,6 +49,11 @@ export class CookingModeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // NEU: Wake Lock freigeben, wenn wir die Komponente verlassen
     this.releaseWakeLock();
+  }
+
+  // NEU: Toggle Funktion
+  toggleIngredients() {
+    this.showIngredients = !this.showIngredients;
   }
 
   // --- NAVIGATION ---

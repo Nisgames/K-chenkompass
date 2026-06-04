@@ -19,10 +19,9 @@ jobs:
 
       - name: Docker Update
         run: |
-          # Wir sind jetzt quasi auf deinem Server
-          # Da der Runner in einem eigenen Ordner arbeitet, müssen wir evtl.
-          # schauen, wie wir Docker Compose aufrufen.
-          # Einfachste Variante für den Runner:
+          mkdir -p ~/docker/kochkompass
+          rsync -a --exclude='.git' ./ ~/docker/kochkompass/
+          cd ~/docker/kochkompass
           docker-compose up -d --build
 
 # ssh -L 8090:localhost:8090 nisgames@192.168.178.55

@@ -14,9 +14,8 @@ services:
     restart: unless-stopped
     # Wir speichern die Daten dauerhaft im Ordner pb_data
     volumes:
-      #- ./pb_data:/pb_data
-      - kitchen_data:/pb_data
-    # PocketBase läuft standardmäßig auf 8090
+      - /mnt/toshiba/kochkompass:/pb_data
+      - ./pb_migrations:/pb/pb_migrations
     ports:
       - "8190:8090"
     # Optional: Healthcheck
@@ -25,6 +24,3 @@ services:
       interval: 50s
       timeout: 50s
       retries: 5
-
-volumes:
-  kitchen_data:
